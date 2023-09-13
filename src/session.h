@@ -19,6 +19,10 @@ namespace http = beast::http;
 
 template <typename RequestHandler>
 class Session : public SessionBase, public std::enable_shared_from_this<Session<RequestHandler>> {
-  // Напишите недостающий код, используя информацию из урока
+  RequestHandler request_handler_;
+  template<class Handler>
+  Session(tcp::socket&& socket, Handler&& request_handler)
+  : SessionBase(std::move(socket)), request_handler_(request_handler)
+  {}
 };
 }  // namespace http_server
