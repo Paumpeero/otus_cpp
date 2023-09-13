@@ -33,11 +33,6 @@ class Session : public SessionBase, public std::enable_shared_from_this<Session<
   }
 
  private:
-  void HandleRequest(HttpRequest&& request) override;
+  void HandleRequest(HttpRequest&& request) override {}
 };
-template<typename RequestHandler>
-void Session<RequestHandler>::HandleRequest(SessionBase::HttpRequest&& request)
-{
-
-}
 }  // namespace http_server
