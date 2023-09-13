@@ -14,6 +14,7 @@ namespace net = boost::asio;
 using namespace std::literals;
 namespace sys = boost::system;
 namespace http = boost::beast::http;
+using namespace std;
 
 // Запрос, тело которого представлено в виде строки
 using StringRequest = http::request<http::string_body>;
@@ -24,7 +25,7 @@ struct ContentType
 {
   ContentType() = delete;
   constexpr static std::string_view
-  TEXT_HTML = "text/html"sv;
+    TEXT_HTML = "text/html"sv;
   // При необходимости внутрь ContentType можно добавить и другие типы контента
 };
 
@@ -76,17 +77,24 @@ int main()
                      {
                        if (!ec)
                        {
+                         cout << "Signal "sv << signal_number << " received"sv << endl;
                          ioc.stop();
                        }
                      });
 
   const auto address = net::ip::make_address("0.0.0.0");
-  constexpr
-  net::ip::port_type port = 8080;
+  constexpr net::ip::port_type port = 8080;
   http_server::ServeHttp(ioc, {address, port}, [](auto&& req, auto&& sender)
   {
     // sender(HandleRequest(std::forward<decltype(req)>(req)));
   });
+
+  net::steady_timer t {ioc, 30s};
+
+  t.async_wait([](sys::error_code ec)
+               {
+                 cout << "Timer expired"sv << endl;
+               });
 
   // Эта надпись сообщает тестам о том, что сервер запущен и готов обрабатывать запросы
   std::cout << "Server has started..."sv << std::endl;
