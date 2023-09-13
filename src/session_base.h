@@ -44,5 +44,11 @@ class SessionBase {
   beast::tcp_stream stream_;
   beast::flat_buffer buffer_;
   HttpRequest request_;
+
+  void OnRead(beast::error_code ec, [[maybe_unused]] size_t bytes_read);
+
+  void Close();
+
+  virtual void HandleRequest(HttpRequest&& request) = 0;
 };
 }  // namespace http_server

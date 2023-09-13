@@ -16,10 +16,37 @@ SessionBase::SessionBase(tcp::socket&& socket)
 }
 void SessionBase::Run()
 {
-
+  net::dispatch(stream_.get_executor(),
+                beast::bind_front_handler(&SessionBase::Read,
+                                          GetSharedThis()));
 }
 void SessionBase::Read()
 {
-
+  using namespace std::literals;
+  request_ = {};
+  stream_.expires_after(30s);
+  http::async_read(stream_, buffer_, request_,
+                   beast::bind_front_handler(&SessionBase::OnRead, GetSharedThis()));
 }
+void SessionBase::OnRead(beast::error_code ec, size_t bytes_read)
+{
+  if (ec == http::error::end_of_stream)
+  {
+    return Close();
+  }
+
+  if (ec)
+  {
+    return ReportError(ec, "read"sv);
+  }
+
+  HandleRequest(std::move(request_));
+}
+void SessionBase::Close()
+{
+  beast::error_code ec;
+
+  stream_.socket().shutdown(tcp::socket::shutdown_send, ec);
+}
+
 }  // namespace http_server

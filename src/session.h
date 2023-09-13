@@ -31,5 +31,13 @@ class Session : public SessionBase, public std::enable_shared_from_this<Session<
   {
     return this->shared_from_this();
   }
+
+ private:
+  void HandleRequest(HttpRequest&& request) override;
 };
+template<typename RequestHandler>
+void Session<RequestHandler>::HandleRequest(SessionBase::HttpRequest&& request)
+{
+
+}
 }  // namespace http_server
