@@ -15,6 +15,7 @@ using namespace std::literals;
 namespace sys = boost::system;
 namespace http = boost::beast::http;
 using namespace std;
+using net::ip::tcp;
 
 // Запрос, тело которого представлено в виде строки
 using StringRequest = http::request<http::string_body>;
@@ -70,6 +71,7 @@ int main()
   const unsigned num_threads = std::thread::hardware_concurrency();
 
   net::io_context ioc(num_threads);
+  tcp::acceptor acceptor(net::make_strand(ioc));
 
   // Подписываемся на сигналы и при их получении завершаем работу сервера
   net::signal_set signals(ioc, SIGINT, SIGTERM);
