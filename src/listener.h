@@ -18,6 +18,23 @@ namespace http = beast::http;
 template<typename RequestHandler>
 class Listener : public std::enable_shared_from_this<Listener<RequestHandler>>
 {
-  // Напишите недостающий код, используя информацию из урока
+  net::io_context& ioc_;
+  tcp::acceptor acceptor_;
+  RequestHandler request_handler_;
+
+ public:
+  template<class Handler>
+  Listener(net::io_context& ioc,
+           const tcp::endpoint& endpoint,
+           Handler&& request_handler)
+    : ioc_(ioc),
+    acceptor_(net::make_strand(ioc)),
+    request_handler_(std::forward<Handler>(request_handler))
+    {
+      acceptor_.open(endpoint.protocol());
+      acceptor_.set_option(net::socket_base::reuse_address(true));
+      acceptor_.bind(endpoint);
+      acceptor_.listen(net::socket_base::max_listen_connections);
+    }
 };
 }  // namespace http_server
