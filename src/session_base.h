@@ -32,6 +32,11 @@ class SessionBase {
   SessionBase(const SessionBase&) = delete;
   SessionBase& operator =(const SessionBase&) = delete;
 
+  void Run();
+  void Read();
+
+  virtual std::shared_ptr<SessionBase> GetSharedThis() = 0;
+
  protected:
   explicit SessionBase(tcp::socket&& socket);
 

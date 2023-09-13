@@ -14,4 +14,12 @@ SessionBase::SessionBase(tcp::socket&& socket)
 {
 
 }
+void SessionBase::Run()
+{
+
+}
+void SessionBase::Read()
+{
+
+}
 }  // namespace http_server
