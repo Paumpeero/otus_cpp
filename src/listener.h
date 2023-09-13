@@ -49,7 +49,7 @@ class Listener : public std::enable_shared_from_this<Listener<RequestHandler>>
   void DoAccept()
   {
     acceptor_.async_accept(net::make_strand(ioc_),
-                           beast::bind_front_handler(&Listener::DoAccept,
+                           beast::bind_front_handler(&Listener::OnAccept,
                                                      this->shared_from_this()));
   }
 
