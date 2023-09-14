@@ -6,11 +6,12 @@
 
 namespace http_server
 {
-void ReportError(beast::error_code ec, std::string_view what) {
+void ReportError(beast::error_code ec, std::string_view what)
+{
   std::cerr << what << ": "sv << ec.message() << std::endl;
 }
 SessionBase::SessionBase(tcp::socket&& socket)
-: stream_(std::move(socket))
+  : stream_(std::move(socket))
 {
 
 }
@@ -47,6 +48,23 @@ void SessionBase::Close()
   beast::error_code ec;
 
   stream_.socket().shutdown(tcp::socket::shutdown_send, ec);
+}
+
+void SessionBase::OnWrite(bool close,
+                          boost::beast::error_code ec,
+                          std::size_t bytes_written)
+{
+  if (ec) {
+    return ReportError(ec, "write"sv);
+  }
+
+  if (close) {
+    // Семантика ответа требует закрыть соединение
+    return Close();
+  }
+
+  // Считываем следующий запрос
+  Read();
 }
 
 }  // namespace http_server

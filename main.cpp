@@ -88,7 +88,7 @@ int main()
   constexpr net::ip::port_type port = 8080;
   http_server::ServeHttp(ioc, {address, port}, [](auto&& req, auto&& sender)
   {
-    // sender(HandleRequest(std::forward<decltype(req)>(req)));
+    sender(HandleRequest(std::forward<decltype(req)>(req)));
   });
 
   net::steady_timer t {ioc, 30s};
