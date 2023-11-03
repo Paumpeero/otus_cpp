@@ -11,8 +11,8 @@
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 
-namespace http_server {
-
+namespace http_server
+{
 namespace net = boost::asio;
 using tcp = net::ip::tcp;
 namespace beast = boost::beast;
@@ -22,7 +22,8 @@ using namespace std::literals;
 
 void ReportError(beast::error_code ec, std::string_view what);
 
-class SessionBase {
+class SessionBase
+{
  protected:
   using HttpRequest = http::request<http::string_body>;
 
@@ -40,22 +41,28 @@ class SessionBase {
  protected:
   explicit SessionBase(tcp::socket&& socket);
 
-  template <typename Body, typename Fields>
-  void Write(http::response<Body, Fields>&& response) {
+  template<typename Body, typename Fields>
+  void Write(http::response<Body, Fields>&& response)
+  {
     // Запись выполняется асинхронно, поэтому response перемещаем в область кучи
-    auto safe_response = std::make_shared<http::response<Body, Fields>>(std::move(response));
+    auto      safe_response = std::make_shared < http::response
+      < Body, Fields>>(std::move(response));
 
     auto self = GetSharedThis();
     http::async_write(stream_, *safe_response,
-                      [safe_response, self](beast::error_code ec, std::size_t bytes_written) {
-                        self->OnWrite(safe_response->need_eof(), ec, bytes_written);
+                      [safe_response, self](beast::error_code ec,
+                                            std::size_t bytes_written)
+                      {
+                        self->OnWrite(safe_response->need_eof(),
+                                      ec,
+                                      bytes_written);
                       });
   }
 
  private:
-  beast::tcp_stream stream_;
+  beast::tcp_stream  stream_;
   beast::flat_buffer buffer_;
-  HttpRequest request_;
+  HttpRequest        request_;
 
   void OnRead(beast::error_code ec, [[maybe_unused]] size_t bytes_read);
 
@@ -63,6 +70,8 @@ class SessionBase {
 
   virtual void HandleRequest(HttpRequest&& request) = 0;
 
-  void OnWrite(bool close, beast::error_code ec, [[maybe_unused]] std::size_t bytes_written);
+  void OnWrite(bool close,
+               beast::error_code ec,
+               [[maybe_unused]] std::size_t bytes_written);
 };
 }  // namespace http_server

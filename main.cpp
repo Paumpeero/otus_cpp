@@ -26,12 +26,14 @@ struct ContentType
 {
   ContentType() = delete;
   constexpr static std::string_view
-    TEXT_HTML = "text/html"sv;
+  TEXT_HTML = "text/html"sv;
   // При необходимости внутрь ContentType можно добавить и другие типы контента
 };
 
 // Создаёт StringResponse с заданными параметрами
-StringResponse MakeStringResponse(http::status status, std::string_view body, unsigned http_version,
+StringResponse MakeStringResponse(http::status status,
+                                  std::string_view body,
+                                  unsigned http_version,
                                   bool keep_alive,
                                   std::string_view content_type = ContentType::TEXT_HTML)
 {
@@ -46,7 +48,10 @@ StringResponse MakeStringResponse(http::status status, std::string_view body, un
 StringResponse HandleRequest(StringRequest&& req)
 {
   // Подставьте сюда код из синхронной версии HTTP-сервера
-  return MakeStringResponse(http::status::ok, "OK"sv, req.version(), req.keep_alive());
+  return MakeStringResponse(http::status::ok,
+                            "OK"sv,
+                            req.version(),
+                            req.keep_alive());
 }
 
 // Запускает функцию fn на n потоках, включая текущий
@@ -71,21 +76,24 @@ int main()
   const unsigned num_threads = std::thread::hardware_concurrency();
 
   net::io_context ioc(num_threads);
-  tcp::acceptor acceptor(net::make_strand(ioc));
+  tcp::acceptor   acceptor(net::make_strand(ioc));
 
   // Подписываемся на сигналы и при их получении завершаем работу сервера
   net::signal_set signals(ioc, SIGINT, SIGTERM);
-  signals.async_wait([&ioc](const sys::error_code& ec, [[maybe_unused]] int signal_number)
+  signals.async_wait([&ioc](const sys::error_code& ec,
+                            [[maybe_unused]] int signal_number)
                      {
                        if (!ec)
                        {
-                         cout << "Signal "sv << signal_number << " received"sv << endl;
+                         cout << "Signal "sv << signal_number << " received"sv
+                              << endl;
                          ioc.stop();
                        }
                      });
 
   const auto address = net::ip::make_address("0.0.0.0");
-  constexpr net::ip::port_type port = 8080;
+  constexpr
+  net::ip::port_type port = 8080;
   http_server::ServeHttp(ioc, {address, port}, [](auto&& req, auto&& sender)
   {
     sender(HandleRequest(std::forward<decltype(req)>(req)));

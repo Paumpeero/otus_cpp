@@ -10,22 +10,25 @@
 
 #include "session_base.h"
 
-namespace http_server {
+namespace http_server
+{
 
 namespace net = boost::asio;
 using tcp = net::ip::tcp;
 namespace beast = boost::beast;
 namespace http = beast::http;
 
-template <typename RequestHandler>
-class Session : public SessionBase, public std::enable_shared_from_this<Session<RequestHandler>> {
+template<typename RequestHandler>
+class Session
+  : public SessionBase,
+    public std::enable_shared_from_this<Session<RequestHandler>>
+{
   RequestHandler request_handler_;
 
  public:
   template<class Handler>
   Session(tcp::socket&& socket, Handler&& request_handler)
-  : SessionBase(std::move(socket)), request_handler_(request_handler)
-  {}
+    : SessionBase(std::move(socket)), request_handler_(request_handler) {}
 
   std::shared_ptr<SessionBase> GetSharedThis() override
   {
@@ -33,13 +36,16 @@ class Session : public SessionBase, public std::enable_shared_from_this<Session<
   }
 
  private:
-  void HandleRequest(HttpRequest&& request) override {
+  void HandleRequest(HttpRequest&& request) override
+  {
     // Захватываем умный указатель на текущий объект Session в лямбде,
     // чтобы продлить время жизни сессии до вызова лямбды.
     // Используется generic-лямбда функция, способная принять response произвольного типа
-    request_handler_(std::move(request), [self = this->shared_from_this()](auto&& response) {
-      self->Write(std::move(response));
-    });
+    request_handler_(std::move(request),
+                     [self = this->shared_from_this()](auto&& response)
+                     {
+                       self->Write(std::move(response));
+                     });
   }
 };
 }  // namespace http_server

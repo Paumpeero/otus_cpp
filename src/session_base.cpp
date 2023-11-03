@@ -27,7 +27,8 @@ void SessionBase::Read()
   request_ = {};
   stream_.expires_after(30s);
   http::async_read(stream_, buffer_, request_,
-                   beast::bind_front_handler(&SessionBase::OnRead, GetSharedThis()));
+                   beast::bind_front_handler(&SessionBase::OnRead,
+                                             GetSharedThis()));
 }
 void SessionBase::OnRead(beast::error_code ec, size_t bytes_read)
 {
@@ -54,11 +55,13 @@ void SessionBase::OnWrite(bool close,
                           boost::beast::error_code ec,
                           std::size_t bytes_written)
 {
-  if (ec) {
+  if (ec)
+  {
     return ReportError(ec, "write"sv);
   }
 
-  if (close) {
+  if (close)
+  {
     // Семантика ответа требует закрыть соединение
     return Close();
   }
