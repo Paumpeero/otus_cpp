@@ -19,6 +19,8 @@ endif ()
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
+configure_file(config.json ${CMAKE_BUILD_RPATH} config.json COPYONLY)
+
 add_executable(hello_async
   main.cpp
   src/http_server.cpp
