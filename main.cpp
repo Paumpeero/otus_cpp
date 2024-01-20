@@ -46,7 +46,8 @@ StringResponse MakeStringResponse(http::status status,
 
 StringResponse HandleRequest(StringRequest&& req)
 {
-  // Подставьте сюда код из синхронной версии HTTP-сервера
+  auto route = req.target();
+
   return MakeStringResponse(http::status::ok,
                             "Hello, World!"sv,
                             req.version(),
