@@ -22,12 +22,11 @@ using StringRequest = http::request<http::string_body>;
 // Ответ, тело которого представлено в виде строки
 using StringResponse = http::response<http::string_body>;
 
-struct ContentType
+struct content_type
 {
-  ContentType() = delete;
-  constexpr static std::string_view
-  TEXT_HTML = "text/html"sv;
-  // При необходимости внутрь ContentType можно добавить и другие типы контента
+  content_type() = delete;
+  constexpr static std::string_view k_TextHTML = "text/html"sv;
+  // При необходимости внутрь content_type можно добавить и другие типы контента
 };
 
 // Создаёт StringResponse с заданными параметрами
@@ -35,7 +34,7 @@ StringResponse MakeStringResponse(http::status status,
                                   std::string_view body,
                                   unsigned http_version,
                                   bool keep_alive,
-                                  std::string_view content_type = ContentType::TEXT_HTML)
+                                  std::string_view content_type = content_type::k_TextHTML)
 {
   StringResponse response(status, http_version);
   response.set(http::field::content_type, content_type);
@@ -49,7 +48,7 @@ StringResponse HandleRequest(StringRequest&& req)
 {
   // Подставьте сюда код из синхронной версии HTTP-сервера
   return MakeStringResponse(http::status::ok,
-                            "OK"sv,
+                            "Hello, World!"sv,
                             req.version(),
                             req.keep_alive());
 }
@@ -91,9 +90,8 @@ int main()
                        }
                      });
 
-  const auto address = net::ip::make_address("0.0.0.0");
-  constexpr
-  net::ip::port_type port = 8080;
+  const auto                   address = net::ip::make_address("0.0.0.0");
+  constexpr net::ip::port_type port    = 8080;
   http_server::ServeHttp(ioc, {address, port}, [](auto&& req, auto&& sender)
   {
     sender(HandleRequest(std::forward<decltype(req)>(req)));
@@ -106,7 +104,6 @@ int main()
                  cout << "Timer expired"sv << endl;
                });
 
-  // Эта надпись сообщает тестам о том, что сервер запущен и готов обрабатывать запросы
   std::cout << "Server has started..."sv << std::endl;
 
   RunWorkers(num_threads, [&ioc]
