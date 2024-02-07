@@ -27,7 +27,7 @@ class SessionBase
  protected:
   using HttpRequest = http::request<http::string_body>;
 
-  ~SessionBase() = default;
+  virtual ~SessionBase() = default;
 
  public:
   SessionBase(const SessionBase&) = delete;
