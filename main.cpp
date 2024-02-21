@@ -76,7 +76,7 @@ int main()
   const unsigned num_threads = std::thread::hardware_concurrency();
 
   net::io_context ioc(num_threads);
-  tcp::acceptor   acceptor(net::make_strand(ioc));
+  tcp::acceptor acceptor(net::make_strand(ioc));
 
   // Подписываемся на сигналы и при их получении завершаем работу сервера
   net::signal_set signals(ioc, SIGINT, SIGTERM);
@@ -91,8 +91,8 @@ int main()
                        }
                      });
 
-  const auto                   address = net::ip::make_address("0.0.0.0");
-  constexpr net::ip::port_type port    = 8080;
+  const auto address = net::ip::make_address("0.0.0.0");
+  constexpr net::ip::port_type port = 8080;
   http_server::ServeHttp(ioc, {address, port}, [](auto&& req, auto&& sender)
   {
     sender(HandleRequest(std::forward<decltype(req)>(req)));
