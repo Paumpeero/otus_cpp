@@ -23,13 +23,5 @@ configure_file(config.json ${CMAKE_BUILD_RPATH} config.json COPYONLY)
 
 add_executable(hello_async
   main.cpp
-  src/http_server.cpp
-  src/http_server.h
-  src/session.h
-  src/session.cpp
-  src/session_base.h
-  src/session_base.cpp
-  src/listener.h
-  src/listener.cpp
-  src/sdk.h)
+)
 target_link_libraries(hello_async PRIVATE Threads::Threads)
