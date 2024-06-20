@@ -21,7 +21,7 @@ find_package(Threads REQUIRED)
 
 configure_file(config.json ${CMAKE_BUILD_RPATH} config.json COPYONLY)
 
-add_executable(hello_async
+add_executable(otus_cpp
   main.cpp
   src/sdk.h)
-target_link_libraries(hello_async PRIVATE Threads::Threads)
+target_link_libraries(otus_cpp PRIVATE Threads::Threads)
