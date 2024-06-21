@@ -1,9 +1,12 @@
-#include "lib.h"
-
+#include "src/sdk.h"
+//
+#include <boost/asio/signal_set.hpp>
 #include <iostream>
+#include <mutex>
+#include <thread>
+#include <vector>
 
-int main(int, char **) {
-	std::cout << "Version: " << version() << std::endl;
-	std::cout << "Hello, world!" << std::endl;
-	return 0;
+int main()
+{
+  return EXIT_SUCCESS;
 }
