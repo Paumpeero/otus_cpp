@@ -5,23 +5,17 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
-set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "C:/Users/Public/Libraries/boost_1_84_0")
-set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/Users/Public/Libraries/boost_1_84_0/stage/lib")
 
-#include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-# conan_basic_setup()
-
-find_package(Boost 1.78.0 REQUIRED)
+find_package(Boost 1.78.0 REQUIRED COMPONENTS log)
 if (Boost_FOUND)
+  message(Boost_INCLUDE_DIRS)
   include_directories(${Boost_INCLUDE_DIRS})
 endif ()
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
-configure_file(config.json ${CMAKE_BUILD_RPATH} config.json COPYONLY)
-
 add_executable(otus_cpp
   main.cpp
   src/sdk.h)
-target_link_libraries(otus_cpp PRIVATE Threads::Threads)
+target_link_libraries(otus_cpp PRIVATE Threads::Threads Boost::log)
