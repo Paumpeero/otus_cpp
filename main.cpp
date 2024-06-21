@@ -1,17 +1,9 @@
-#include "src/sdk.h"
-//
-#include <boost/asio/signal_set.hpp>
-#include <boost/log/trivial.hpp>
+#include "lib.h"
+
 #include <iostream>
-#include <mutex>
-#include <thread>
-#include <vector>
 
-using namespace std;
-
-int main()
-{
-  BOOST_LOG_TRIVIAL(error) << "GET" << " /api/v1/config" << endl;
-
-  return EXIT_SUCCESS;
+int main(int, char **) {
+	std::cout << "Version: " << version() << std::endl;
+	std::cout << "Hello, world!" << std::endl;
+	return 0;
 }
