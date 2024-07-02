@@ -20,6 +20,6 @@ int main()
   cout << GetAsIP( std::string{"Hello, World!"} ) << endl; // Hello, World!
   cout << GetAsIP( std::vector<int>{100, 200, 300, 400} ) << endl; // 100.200.300.400
   cout << GetAsIP( std::list<short>{400, 300, 200, 100} ) << endl; // 400.300.200.100
-//  GetAsIP( std::make_tuple(123, 456, 789, 0) ); // 123.456.789.0
+  cout << GetAsIP( std::make_tuple(123, 456, 789, 0) ) << endl; // 123.456.789.0
   return EXIT_SUCCESS;
 }

@@ -68,4 +68,19 @@ string GetAsIP<list<short>>(list<short> source)
 
   return ret;
 }
+template<>
+string GetAsIP<tuple<int, int, int, int>>(tuple<int, int, int, int> source)
+{
+  string ret;
+
+  ret += to_string(get<0>(source));
+  ret += "."s;
+  ret += to_string(get<1>(source));
+  ret += "."s;
+  ret += to_string(get<2>(source));
+  ret += "."s;
+  ret += to_string(get<3>(source));
+
+  return ret;
+}
 }
