@@ -21,7 +21,7 @@ find_package(Threads REQUIRED)
 
 configure_file(config.json ${CMAKE_BUILD_RPATH} config.json COPYONLY)
 
-add_executable(hello_async
-  main.cpp
-  src/sdk.h)
+add_executable(hello_async main.cpp
+                           src/sdk.h
+                           src/matrix.h)
 target_link_libraries(hello_async PRIVATE Threads::Threads)
