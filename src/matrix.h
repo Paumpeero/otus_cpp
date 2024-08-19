@@ -29,6 +29,8 @@ class IMatrixIterator
   virtual IMatrixIterator* operator ->() = 0;
   virtual IMatrixIterator& operator ++() = 0;
   virtual IMatrixIterator operator ++(int) = 0;
+  virtual bool operator ==(const IMatrixIterator& iter) const = 0;
+  virtual bool operator !=(const IMatrixIterator& iter) const = 0;
   virtual ~IMatrixIterator() = default;
 };
 
