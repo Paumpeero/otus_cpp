@@ -65,13 +65,12 @@ template<class T, T Default>
 class IMatrix<T, Default, 1, size_t>
 {
  protected:
-  using ILowerMatrix = IMatrix<T, Default, 1>;
   using Cell = std::tuple<size_t, T>;
   using Iter = IMatrixIterator<T, Default, 1, size_t>;
   using ConstIter = const Iter;
  public:
   virtual size_t GetSize() const = 0;
-  virtual ILowerMatrix& operator [](size_t index) = 0;
+  virtual std::unordered_map<size_t, T>& operator [](size_t index) = 0;
   virtual Cell At(size_t d) = 0;
   virtual Iter begin() = 0;
   virtual ConstIter begin() const = 0;
