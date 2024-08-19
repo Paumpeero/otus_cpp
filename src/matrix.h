@@ -5,6 +5,7 @@ namespace lib
 {
 template<
   class T,
+  T Default,
   size_t DimensionsCount,
   class Dimension = size_t,
   class... Dimensions
@@ -27,7 +28,7 @@ class IMatrix
  protected:
   using ILowerMatrix = IMatrix<T, Default, DimensionsCount - 1, Dimensions...>;
   using Cell = std::tuple<Dimension, Dimensions..., T>;
-  using Iter = IMatrixIterator<T, DimensionsCount, Dimension, Dimensions...>;
+  using Iter = IMatrixIterator<T, Default, DimensionsCount, Dimension, Dimensions...>;
   using ConstIter = const Iter;
  public:
   virtual size_t GetSize() const = 0;
@@ -48,7 +49,7 @@ class IMatrix<T, Default, 1, size_t>
  protected:
   using ILowerMatrix = IMatrix<T, Default, 1>;
   using Cell = std::tuple<size_t, T>;
-  using Iter = IMatrixIterator<T, 1, size_t>;
+  using Iter = IMatrixIterator<T, Default, 1, size_t>;
   using ConstIter = const Iter;
  public:
   virtual size_t GetSize() const = 0;
