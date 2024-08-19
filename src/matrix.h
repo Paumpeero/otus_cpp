@@ -7,7 +7,7 @@ template<
   class T,
   T Default,
   size_t DimensionsCount,
-  class Dimension = size_t,
+  class Dimension,
   class... Dimensions
 >
 class IMatrix;
