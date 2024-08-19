@@ -10,9 +10,25 @@ template<
   class Dimension = size_t,
   class... Dimensions
 >
+class IMatrix;
+
+template<
+  class T,
+  T Default,
+  size_t DimensionsCount,
+  class Dimension = size_t,
+  class... Dimensions
+>
 class IMatrixIterator
 {
+  using Cell = std::tuple<Dimension, Dimensions..., T>;
+  using Matrix = IMatrix<T, Default, DimensionsCount, Dimension, Dimensions...>;
  public:
+  virtual Matrix& GetMatrix() const = 0;
+  virtual Cell operator *() = 0;
+  virtual IMatrixIterator* operator ->() = 0;
+  virtual IMatrixIterator& operator ++() = 0;
+  virtual IMatrixIterator operator ++(int) = 0;
   virtual ~IMatrixIterator() = default;
 };
 
