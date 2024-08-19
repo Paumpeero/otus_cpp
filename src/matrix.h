@@ -1,63 +1,65 @@
-#include <unordered_map>
+#include <array>
 #include <memory>
 
 namespace lib
 {
-template<uint64_t Dimensions, int64_t DefaultValue>
-class MatrixIterator;
+template<
+  class T,
+  size_t DimensionsCount,
+  class Dimension = size_t,
+  class... Dimensions
+>
+class IMatrixIterator
+{
+ public:
+  virtual ~IMatrixIterator() = default;
+};
 
-template<uint64_t Dimensions, int64_t DefaultValue>
+template<
+  class T,
+  T Default,
+  size_t DimensionsCount,
+  class Dimension = size_t,
+  class... Dimensions
+>
 class IMatrix
 {
  protected:
-  using Raw = IMatrix<Dimensions - 1, DefaultValue>;
-  using Iterator = MatrixIterator<Dimensions, DefaultValue>;
-  using ConstIterator = const Iterator;
+  using ILowerMatrix = IMatrix<T, Default, DimensionsCount - 1, Dimensions...>;
+  using Cell = std::tuple<Dimension, Dimensions..., T>;
+  using Iter = IMatrixIterator<T, DimensionsCount, Dimension, Dimensions...>;
+  using ConstIter = const Iter;
  public:
   virtual size_t GetSize() const = 0;
-  virtual Iterator begin() = 0;
-  virtual ConstIterator begin() const = 0;
-  virtual Iterator end() = 0;
-  virtual ConstIterator end() const = 0;
-  virtual Raw& operator [](size_t index) = 0;
-
+  virtual ILowerMatrix& operator [](size_t index) = 0;
+  virtual Cell At(Dimension d, Dimensions... ds) = 0;
+  virtual Iter begin() = 0;
+  virtual ConstIter begin() const = 0;
+  virtual ConstIter cbegin() const = 0;
+  virtual Iter end() = 0;
+  virtual ConstIter end() const = 0;
+  virtual ConstIter cend() const = 0;
   virtual ~IMatrix() = default;
 };
 
-template<int64_t DefaultValue>
-class IMatrix<1, DefaultValue>
+template<class T, T Default>
+class IMatrix<T, Default, 1, size_t>
 {
-  using Raw = int64_t;
+ protected:
+  using ILowerMatrix = IMatrix<T, Default, 1>;
+  using Cell = std::tuple<size_t, T>;
+  using Iter = IMatrixIterator<T, 1, size_t>;
+  using ConstIter = const Iter;
  public:
-  using Iterator = std::unordered_map<uint64_t, int64_t>::iterator;
-  using ConstIterator = const Iterator;
-
   virtual size_t GetSize() const = 0;
-  virtual Iterator begin() = 0;
-  virtual ConstIterator begin() const = 0;
-  virtual Iterator end() = 0;
-  virtual ConstIterator end() const = 0;
-  virtual Raw& operator [](size_t index) = 0;
-
+  virtual ILowerMatrix& operator [](size_t index) = 0;
+  virtual Cell At(size_t d) = 0;
+  virtual Iter begin() = 0;
+  virtual ConstIter begin() const = 0;
+  virtual ConstIter cbegin() const = 0;
+  virtual Iter end() = 0;
+  virtual ConstIter end() const = 0;
+  virtual ConstIter cend() const = 0;
   virtual ~IMatrix() = default;
-};
-
-template<uint64_t Dimensions, int64_t DefaultValue>
-class MatrixProxy;
-
-template<uint64_t Dimensions, int64_t DefaultValue>
-class Matrix : public IMatrix<Dimensions, DefaultValue>
-{
-  using Parent = IMatrix<Dimensions, DefaultValue>;
-  using Proxy = MatrixProxy<Dimensions, DefaultValue>;
-
-  std::unique_ptr<Proxy> impl_;
- public:
-  size_t GetSize() const { return impl_->GetSize(); }
-  Parent::Iterator begin() { return impl_->begin(); }
-  Parent::ConstIterator begin() const { return impl_->begin(); }
-  Parent::Iterator end() { return impl_->end(); }
-  Parent::ConstIterator end() const { return impl_->end(); }
-  Parent::Raw& operator [](size_t index) { return impl_->operator [](index); }
 };
 }

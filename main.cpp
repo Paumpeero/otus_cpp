@@ -5,6 +5,7 @@
 #include <mutex>
 #include <thread>
 #include <vector>
+#include "src/matrix.h"
 
 int main()
 {
