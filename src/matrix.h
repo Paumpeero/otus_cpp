@@ -80,4 +80,23 @@ class IMatrix<T, Default, 1, size_t>
   virtual ConstIter cend() const = 0;
   virtual ~IMatrix() = default;
 };
+
+template<
+  class T,
+  T Default
+>
+class IMatrixIterator<T, Default, 1, size_t>
+{
+  using Cell = std::tuple<size_t, T>;
+  using Matrix = IMatrix<T, Default, 1, size_t>;
+ public:
+  virtual Matrix& GetMatrix() const = 0;
+  virtual Cell operator *() = 0;
+  virtual IMatrixIterator* operator ->() = 0;
+  virtual IMatrixIterator& operator ++() = 0;
+  virtual IMatrixIterator operator ++(int) = 0;
+  virtual bool operator ==(const IMatrixIterator& iter) const = 0;
+  virtual bool operator !=(const IMatrixIterator& iter) const = 0;
+  virtual ~IMatrixIterator() = default;
+};
 }
