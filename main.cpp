@@ -12,7 +12,9 @@ using namespace std;
 
 int main()
 {
-  Matrix<int64_t, -1, 1> matrix;
+  constexpr int64_t kDefault = -1;
+  constexpr size_t kDimensionsCount = 1;
+  Matrix<int64_t, kDefault, kDimensionsCount> matrix;
 
   return EXIT_SUCCESS;
 }

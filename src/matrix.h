@@ -115,6 +115,7 @@ class MatrixImpl<T, Default, 1> final : public IMatrix<T, Default, 1>
  public:
   [[nodiscard]]
   size_t GetSize() const override { return indexes_to_values_.size(); }
+
   T& operator [](size_t index)
   {
     if (!indexes_to_values_.count(index))
@@ -124,6 +125,7 @@ class MatrixImpl<T, Default, 1> final : public IMatrix<T, Default, 1>
 
     return indexes_to_values_[index];
   }
+
   T& At(size_t d) override { return indexes_to_values_.at(d); }
   Interface::Iter begin() override {}
   Interface::ConstIter begin() const override {}
