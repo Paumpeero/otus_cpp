@@ -5,22 +5,10 @@ namespace lib
 {
 using namespace std::string_literals;
 
-template<
-  class T,
-  T Default,
-  size_t DimensionsCount,
-  class Dimension,
-  class... Dimensions
->
+template<class T, T Default, size_t DimensionsCount, class Dimension = size_t, class... Dimensions>
 class IMatrix;
 
-template<
-  class T,
-  T Default,
-  size_t DimensionsCount,
-  class Dimension = size_t,
-  class... Dimensions
->
+template<class T, T Default, size_t DimensionsCount, class Dimension = size_t, class... Dimensions>
 class IMatrixIterator
 {
   using Cell = std::tuple<Dimension, Dimensions..., T>;
@@ -36,13 +24,7 @@ class IMatrixIterator
   virtual ~IMatrixIterator() = default;
 };
 
-template<
-  class T,
-  T Default,
-  size_t DimensionsCount,
-  class Dimension = size_t,
-  class... Dimensions
->
+template<class T, T Default, size_t DimensionsCount, class Dimension = size_t, class... Dimensions>
 class IMatrix
 {
  protected:
@@ -85,10 +67,7 @@ class IMatrix<T, Default, 1>
   virtual ~IMatrix() = default;
 };
 
-template<
-  class T,
-  T Default
->
+template<class T, T Default>
 class IMatrixIterator<T, Default, 1>
 {
  protected:
@@ -105,8 +84,31 @@ class IMatrixIterator<T, Default, 1>
   virtual ~IMatrixIterator() = default;
 };
 
+template<class T, T Default, size_t DimensionsCount>
+class MatrixImpl final : public IMatrix<T, Default, DimensionsCount>
+{
+  using Interface = IMatrix<T, Default, 1>;
+  std::unordered_map<uint64_t, T> indexes_to_values_;
+ public:
+};
+
+template<class T, T Default, size_t DimensionsCount>
+class Matrix final : public IMatrix<T, Default, DimensionsCount>
+{
+  using Interface = IMatrix<T, Default, 1>;
+  using Implementation = MatrixImpl<T, Default, DimensionsCount>;
+
+  std::unique_ptr<Interface> impl_ = std::make_unique<Implementation>();
+ public:
+ private:
+  void ThrowEmptyMatrixError()
+  {
+    throw std::runtime_error("Current matrix is empty"s);
+  }
+};
+
 template<class T, T Default>
-class MatrixImpl final : public IMatrix<T, Default, 1>
+class MatrixImpl<T, Default, 1> final : public IMatrix<T, Default, 1>
 {
   using Interface = IMatrix<T, Default, 1>;
   std::unordered_map<uint64_t, T> indexes_to_values_;
@@ -132,10 +134,10 @@ class MatrixImpl final : public IMatrix<T, Default, 1>
 };
 
 template<class T, T Default>
-class Matrix final : public IMatrix<T, Default, 1>
+class Matrix<T, Default, 1> final : public IMatrix<T, Default, 1>
 {
   using Interface = IMatrix<T, Default, 1>;
-  using Implementation = MatrixImpl<T, Default>;
+  using Implementation = MatrixImpl<T, Default, 1>;
 
   std::unique_ptr<Interface> impl_ = std::make_unique<Implementation>();
  public:

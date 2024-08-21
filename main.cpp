@@ -12,7 +12,7 @@ using namespace std;
 
 int main()
 {
-  unique_ptr<IMatrix<int64_t, -1, 1>> matrix = make_unique<Matrix<int64_t, -1>>();
+  Matrix<int64_t, -1, 1> matrix;
 
   return EXIT_SUCCESS;
 }
