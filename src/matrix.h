@@ -13,8 +13,12 @@ class IMatrixIterator
 {
   using Cell = std::tuple<Dimension, Dimensions..., T>;
   using Matrix = IMatrix<T, Default, DimensionsCount, Dimension, Dimensions...>;
+  using ILowerMatrix = IMatrix<T, Default, DimensionsCount - 1, Dimensions...>;
  public:
-  virtual Matrix& GetMatrix() const = 0;
+  virtual const Matrix& GetMatrix() const = 0;
+  virtual const ILowerMatrix& GetLowerMatrix() const = 0;
+  virtual size_t GetCoordinate() const = 0;
+  virtual void SetCoordinate(size_t coordinate) const = 0;
   virtual Cell operator *() = 0;
   virtual IMatrixIterator* operator ->() = 0;
   virtual IMatrixIterator& operator ++() = 0;
@@ -74,7 +78,10 @@ class IMatrixIterator<T, Default, 1>
   using Cell = std::tuple<size_t, T>;
   using Matrix = IMatrix<T, Default, 1, size_t>;
  public:
-  virtual Matrix& GetMatrix() const = 0;
+  virtual const Matrix& GetMatrix() const = 0;
+  virtual const T& GetValue() const = 0;
+  virtual size_t GetCoordinate() const = 0;
+  virtual void SetCoordinate(size_t coordinate) const = 0;
   virtual Cell operator *() = 0;
   virtual Matrix* operator ->() = 0;
   virtual IMatrixIterator& operator ++() = 0;
