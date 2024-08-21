@@ -5,7 +5,7 @@ namespace lib
 {
 using namespace std::string_literals;
 
-template<class T, T Default, size_t DimensionsCount, class Dimension = size_t, class... Dimensions>
+template<class T, T Default, size_t DimensionsCount, class Dimension, class... Dimensions>
 class IMatrix;
 
 template<class T, T Default, size_t DimensionsCount, class Dimension = size_t, class... Dimensions>
