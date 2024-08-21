@@ -51,6 +51,7 @@ class IMatrix
   using Iter = IMatrixIterator<T, Default, DimensionsCount, Dimension, Dimensions...>;
   using ConstIter = const Iter;
  public:
+  [[nodiscard]]
   virtual size_t GetSize() const = 0;
   virtual ILowerMatrix& operator [](size_t index) = 0;
   virtual Cell At(Dimension d, Dimensions... ds) = 0;
@@ -64,13 +65,14 @@ class IMatrix
 };
 
 template<class T, T Default>
-class IMatrix<T, Default, 1, size_t>
+class IMatrix<T, Default, 1>
 {
  protected:
   using Cell = std::tuple<size_t, T>;
   using Iter = IMatrixIterator<T, Default, 1, size_t>;
   using ConstIter = const Iter;
  public:
+  [[nodiscard]]
   virtual size_t GetSize() const = 0;
   virtual T& operator [](size_t index) = 0;
   virtual Cell At(size_t d) = 0;
@@ -87,7 +89,7 @@ template<
   class T,
   T Default
 >
-class IMatrixIterator<T, Default, 1, size_t>
+class IMatrixIterator<T, Default, 1>
 {
  protected:
   using Cell = std::tuple<size_t, T>;
@@ -104,14 +106,33 @@ class IMatrixIterator<T, Default, 1, size_t>
 };
 
 template<class T, T Default>
-class MatrixImpl final : public IMatrix<T, Default, 1, size_t>
+class MatrixImpl final : public IMatrix<T, Default>
 {
   using Interface = IMatrix<T, Default, 1, size_t>;
   std::unordered_map<uint64_t, T> indexes_to_values_;
+ public:
+  [[nodiscard]]
+  size_t GetSize() const override { return indexes_to_values_.size(); }
+  T& operator [](size_t index)
+  {
+    if (!indexes_to_values_.count(index))
+    {
+      indexes_to_values_[index] = Default;
+    }
+
+    return indexes_to_values_[index];
+  }
+  Interface::Cell At(size_t d) override { return indexes_to_values_.at(d); }
+  Interface::Iter begin() override {}
+  Interface::ConstIter begin() const override {}
+  Interface::ConstIter cbegin() const override {}
+  Interface::Iter end() override {}
+  Interface::ConstIter end() const override {}
+  Interface::ConstIter cend() const override {}
 };
 
 template<class T, T Default>
-class Matrix final : public IMatrix<T, Default, 1, size_t>
+class Matrix final : public IMatrix<T, Default>
 {
   using Interface = IMatrix<T, Default, 1, size_t>;
   using Implementation = MatrixImpl<T, Default>;
@@ -119,40 +140,40 @@ class Matrix final : public IMatrix<T, Default, 1, size_t>
   std::unique_ptr<Interface> impl_ = std::make_unique<Implementation>();
  public:
   [[nodiscard]]
-  size_t GetSize() const { return impl_->GetSize(); }
-  T& operator [](size_t index) { return impl_->operator [](index); }
+  size_t GetSize() const override { return impl_->GetSize(); }
+  T& operator [](size_t index) override { return impl_->operator [](index); }
 
-  Interface::Cell At(size_t d)
+  Interface::Cell At(size_t d) override
   {
     if (!GetSize()) ThrowEmptyMatrixError();
 
     return impl_->At(d);
   }
 
-  Interface::Iter begin()
+  Interface::Iter begin() override
   {
     if (!GetSize()) ThrowEmptyMatrixError();
 
     return impl_->begin();
   }
 
-  Interface::ConstIter begin() const
+  Interface::ConstIter begin() const override
   {
     if (!GetSize()) ThrowEmptyMatrixError();
 
     return impl_->cbegin();
   }
 
-  Interface::ConstIter cbegin() const
+  Interface::ConstIter cbegin() const override
   {
     if (!GetSize()) ThrowEmptyMatrixError();
 
     return impl_->cbegin();
   }
 
-  Interface::Iter end() { return impl_->end(); }
-  Interface::ConstIter end() const { return impl_->cend(); }
-  Interface::ConstIter cend() const { return impl_->cend(); }
+  Interface::Iter end() override { return impl_->end(); }
+  Interface::ConstIter end() const override { return impl_->cend(); }
+  Interface::ConstIter cend() const override { return impl_->cend(); }
 
  private:
   void ThrowEmptyMatrixError()
