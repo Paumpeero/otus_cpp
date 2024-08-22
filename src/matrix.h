@@ -117,21 +117,22 @@ class MatrixIterator final : public IMatrixIterator<T, Default, 1>
 {
  private:
   using Interface = IMatrixIterator<T, Default, 1>;
-  using Matrix = IMatrix<T, Default, 1>;
+  using Matrix = MatrixImpl<T, Default, 1>;
   using Iter = typename std::unordered_map<size_t, T>::iterator;
 
   Matrix& matrix_;
-
+  Iter iter_;
  public:
-  const Matrix& GetMatrix() const {}
-  const T& GetValue() const {}
-  Iter GetImpl() const {}
+  explicit MatrixIterator(Matrix& matrix_ref, Iter iter): matrix_(matrix_ref), iter_(iter) {}
+  const Matrix& GetMatrix() const { return matrix_; }
+  const T& GetValue() const { return iter_->second; }
+  Iter GetImpl() const { return iter_; }
   Cell operator *() {}
   Matrix* operator ->() {}
   Interface& operator ++() {}
   Interface operator ++(int) {}
-  bool operator ==(const Interface& iter) const {}
-  bool operator !=(const Interface& iter) const {}
+  bool operator ==(const Interface& iter) const { return &matrix_ == &iter.GetMatrix(); }
+  bool operator !=(const Interface& iter) const { return !(*this == iter); }
 };
 
 template<class T, T Default>
@@ -154,12 +155,31 @@ class MatrixImpl<T, Default, 1> final : public IMatrix<T, Default, 1>
   }
 
   T& At(size_t d) override { return indexes_to_values_.at(d); }
-  Interface::Iter begin() override { return indexes_to_values_.begin(); }
-  Interface::ConstIter begin() const override { return indexes_to_values_.begin(); }
-  Interface::ConstIter cbegin() const override { return indexes_to_values_.begin(); }
-  Interface::Iter end() override { return indexes_to_values_.end(); }
-  Interface::ConstIter end() const override { return indexes_to_values_.end(); }
-  Interface::ConstIter cend() const override { return indexes_to_values_.end(); }
+
+  Interface::Iter begin() override
+  {
+    return MatrixIterator<T, Default>(*this, indexes_to_values_.begin());
+  }
+  Interface::ConstIter begin() const override
+  {
+    return MatrixIterator<T, Default>(*this, indexes_to_values_.begin());
+  }
+  Interface::ConstIter cbegin() const override
+  {
+    return MatrixIterator<T, Default>(*this, indexes_to_values_.begin());
+  }
+  Interface::Iter end() override
+  {
+    return MatrixIterator<T, Default>(*this, indexes_to_values_.end());
+  }
+  Interface::ConstIter end() const override
+  {
+    return MatrixIterator<T, Default>(*this, indexes_to_values_.end());
+  }
+  Interface::ConstIter cend() const override
+  {
+    return MatrixIterator<T, Default>(*this, indexes_to_values_.end());
+  }
 
  private:
   friend class MatrixIterator<T, Default>;
