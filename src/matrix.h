@@ -11,12 +11,14 @@ class IMatrix;
 template<class T, T Default, size_t DimensionsCount, class Dimension = size_t, class... Dimensions>
 class IMatrixIterator
 {
+ protected:
   using Cell = std::tuple<Dimension, Dimensions..., T>;
   using Matrix = IMatrix<T, Default, DimensionsCount, Dimension, Dimensions...>;
   using ILowerMatrix = IMatrix<T, Default, DimensionsCount - 1, Dimensions...>;
  public:
   virtual const Matrix& GetMatrix() const = 0;
   virtual const ILowerMatrix& GetLowerMatrix() const = 0;
+  [[nodiscard]]
   virtual size_t GetCoordinate() const = 0;
   virtual void SetCoordinate(size_t coordinate) const = 0;
   virtual Cell operator *() = 0;
@@ -80,8 +82,7 @@ class IMatrixIterator<T, Default, 1>
  public:
   virtual const Matrix& GetMatrix() const = 0;
   virtual const T& GetValue() const = 0;
-  virtual size_t GetCoordinate() const = 0;
-  virtual void SetCoordinate(size_t coordinate) const = 0;
+  virtual typename std::unordered_map<uint64_t, T>::iterator GetImpl() const = 0;
   virtual Cell operator *() = 0;
   virtual Matrix* operator ->() = 0;
   virtual IMatrixIterator& operator ++() = 0;
@@ -115,6 +116,37 @@ class Matrix final : public IMatrix<T, Default, DimensionsCount>
 };
 
 template<class T, T Default>
+class MatrixIterator final : public IMatrixIterator<T, Default, 1>
+{
+ private:
+  using Interface = IMatrixIterator<T, Default, 1>;
+
+  Interface::Matrix matrix_;
+  typename std::unordered_map<uint64_t, T>::iterator impl_ {};
+  size_t position_ = 0;
+ public:
+  explicit MatrixIterator(Interface& matrix, size_t position): matrix_(matrix), position_(position)
+  {
+    impl_ += position;
+  }
+  const typename Interface::Matrix& GetMatrix() const { return matrix_; }
+  const T& GetValue() const {}
+  std::unordered_map<uint64_t, T>::iterator GetImpl() const
+  {
+    return impl_;
+  }
+  Interface::Cell operator *() { return make_tuple<size_t, T>(position_, GetValue()); }
+  Interface::Matrix* operator ->() { return &matrix_; }
+  Interface& operator ++() {}
+  Interface operator ++(int) {}
+  bool operator ==(const Interface& iter) const
+  {
+    return GetImpl() == iter.GetImpl();
+  }
+  bool operator !=(const Interface& iter) const { return !(*this == iter); }
+};
+
+template<class T, T Default>
 class MatrixImpl<T, Default, 1> final : public IMatrix<T, Default, 1>
 {
   using Interface = IMatrix<T, Default, 1>;
@@ -134,11 +166,11 @@ class MatrixImpl<T, Default, 1> final : public IMatrix<T, Default, 1>
   }
 
   T& At(size_t d) override { return indexes_to_values_.at(d); }
-  Interface::Iter begin() override {}
-  Interface::ConstIter begin() const override {}
-  Interface::ConstIter cbegin() const override {}
-  Interface::Iter end() override {}
-  Interface::ConstIter end() const override {}
+  Interface::Iter begin() override { return indexes_to_values_.begin(); }
+  Interface::ConstIter begin() const override { return indexes_to_values_.begin(); }
+  Interface::ConstIter cbegin() const override { return indexes_to_values_.begin(); }
+  Interface::Iter end() override { return indexes_to_values_.end(); }
+  Interface::ConstIter end() const override { return indexes_to_values_.end(); }
   Interface::ConstIter cend() const override {}
 };
 
