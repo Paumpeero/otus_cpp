@@ -18,9 +18,6 @@ class IMatrixIterator
  public:
   virtual const Matrix& GetMatrix() const = 0;
   virtual const ILowerMatrix& GetLowerMatrix() const = 0;
-  [[nodiscard]]
-  virtual size_t GetCoordinate() const = 0;
-  virtual void SetCoordinate(size_t coordinate) const = 0;
   virtual Cell operator *() = 0;
   virtual IMatrixIterator* operator ->() = 0;
   virtual IMatrixIterator& operator ++() = 0;
@@ -120,37 +117,28 @@ class MatrixIterator final : public IMatrixIterator<T, Default, 1>
 {
  private:
   using Interface = IMatrixIterator<T, Default, 1>;
+  using Matrix = IMatrix<T, Default, 1>;
+  using Iter = typename std::unordered_map<size_t, T>::iterator;
 
-  Interface::Matrix matrix_;
-  typename std::unordered_map<uint64_t, T>::iterator impl_ {};
-  size_t position_ = 0;
+  Matrix& matrix_;
+
  public:
-  explicit MatrixIterator(Interface& matrix, size_t position): matrix_(matrix), position_(position)
-  {
-    impl_ += position;
-  }
-  const typename Interface::Matrix& GetMatrix() const { return matrix_; }
+  const Matrix& GetMatrix() const {}
   const T& GetValue() const {}
-  std::unordered_map<uint64_t, T>::iterator GetImpl() const
-  {
-    return impl_;
-  }
-  Interface::Cell operator *() { return make_tuple<size_t, T>(position_, GetValue()); }
-  Interface::Matrix* operator ->() { return &matrix_; }
+  Iter GetImpl() const {}
+  Cell operator *() {}
+  Matrix* operator ->() {}
   Interface& operator ++() {}
   Interface operator ++(int) {}
-  bool operator ==(const Interface& iter) const
-  {
-    return GetImpl() == iter.GetImpl();
-  }
-  bool operator !=(const Interface& iter) const { return !(*this == iter); }
+  bool operator ==(const Interface& iter) const {}
+  bool operator !=(const Interface& iter) const {}
 };
 
 template<class T, T Default>
 class MatrixImpl<T, Default, 1> final : public IMatrix<T, Default, 1>
 {
   using Interface = IMatrix<T, Default, 1>;
-  std::unordered_map<uint64_t, T> indexes_to_values_;
+  std::unordered_map<size_t, T> indexes_to_values_;
  public:
   [[nodiscard]]
   size_t GetSize() const override { return indexes_to_values_.size(); }
@@ -172,6 +160,9 @@ class MatrixImpl<T, Default, 1> final : public IMatrix<T, Default, 1>
   Interface::Iter end() override { return indexes_to_values_.end(); }
   Interface::ConstIter end() const override { return indexes_to_values_.end(); }
   Interface::ConstIter cend() const override { return indexes_to_values_.end(); }
+
+ private:
+  friend class MatrixIterator<T, Default>;
 };
 
 template<class T, T Default>
