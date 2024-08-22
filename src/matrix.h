@@ -123,7 +123,7 @@ class MatrixIterator final : public IMatrixIterator<T, Default, 1>
   Matrix& matrix_;
   Iter iter_;
  public:
-  explicit MatrixIterator(Matrix& matrix_ref, Iter iter): matrix_(matrix_ref), iter_(iter) {}
+  MatrixIterator(Matrix& matrix_ref, Iter iter): matrix_(matrix_ref), iter_(iter) {}
   const Matrix& GetMatrix() const { return matrix_; }
   const T& GetValue() const { return iter_->second; }
   Iter GetImpl() const { return iter_; }
