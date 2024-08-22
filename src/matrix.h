@@ -171,7 +171,7 @@ class MatrixImpl<T, Default, 1> final : public IMatrix<T, Default, 1>
   Interface::ConstIter cbegin() const override { return indexes_to_values_.begin(); }
   Interface::Iter end() override { return indexes_to_values_.end(); }
   Interface::ConstIter end() const override { return indexes_to_values_.end(); }
-  Interface::ConstIter cend() const override {}
+  Interface::ConstIter cend() const override { return indexes_to_values_.end(); }
 };
 
 template<class T, T Default>
