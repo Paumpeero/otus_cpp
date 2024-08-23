@@ -33,9 +33,7 @@ class Matrix<T, Default, 1, size_t>
 
     Cell operator *()
     {
-      auto ret = std::make_tuple<size_t, T>(impl_->first, impl_->second);
-
-      return ret;
+      return tuple<size_t, T&>(impl_->first, impl_->second);
     }
 
     Matrix* operator ->() { return &matrix_; }
@@ -48,6 +46,12 @@ class Matrix<T, Default, 1, size_t>
     bool operator !=(const Iter& rhs)
     {
       return !(*this == rhs);
+    }
+
+    Iter& operator ++()
+    {
+      ++impl_;
+      return *this;
     }
   };
 

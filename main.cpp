@@ -27,15 +27,15 @@ int main()
 
   matrix[101] = 311;
 
-//  for (auto t : matrix)
-//  {
-//    size_t x;
-//    int64_t val;
-//
-//    std::tie(x, val) = t;
-//
-//    cout << "x: "s << x << "\nval: " << val << endl;
-//  }
+  for (auto t : matrix)
+  {
+    size_t x;
+    int64_t val;
+
+    std::tie(x, val) = t;
+
+    cout << "x: "s << x << "\nval: " << val << endl;
+  }
 
   return EXIT_SUCCESS;
 }
