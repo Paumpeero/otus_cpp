@@ -4,22 +4,31 @@
 
 namespace lib
 {
-template<class T, T Default, size_t DimensionsCount, class Dimension = size_t, class... Dimensions>
+template<class T, T Default, size_t DimensionsCount>
 class Matrix
 {
+ public:
+  using LowerMatrix = Matrix<T, Default, DimensionsCount - 1>;
+  class Iter
+  {
+   public:
+    using Cell = decltype(std::tuple_cat(size_t(0), typename LowerMatrix::Iter::Cell()));
+  };
 };
 
 template<class T, T Default>
-class Matrix<T, Default, 1, size_t>
+class Matrix<T, Default, 1>
 {
+  std::unordered_map<size_t, T> row_;
+ public:
   class Iter
   {
     using IterImpl = typename std::unordered_map<size_t, T>::iterator;
-    using Cell = std::tuple<size_t, T>;
 
     Matrix& matrix_;
     IterImpl impl_;
    public:
+    using Cell = std::tuple<size_t, T>;
     Iter() = delete;
     explicit Iter(Matrix& matrix, size_t offset = 0)
       : matrix_(matrix), impl_(matrix_.row_.begin())
@@ -57,8 +66,6 @@ class Matrix<T, Default, 1, size_t>
 
   friend class Iter;
 
-  std::unordered_map<size_t, T> row_;
- public:
   size_t GetSize() const
   {
     size_t i = 0;
