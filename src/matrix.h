@@ -7,13 +7,39 @@ namespace lib
 template<class T, T Default, size_t DimensionsCount>
 class Matrix
 {
- public:
   using LowerMatrix = Matrix<T, Default, DimensionsCount - 1>;
+
+  std::unordered_map<size_t, LowerMatrix> row_;
+ public:
   class Iter
   {
+    using IterImpl = typename std::unordered_map<size_t, LowerMatrix>::iterator;
+
+    Matrix& matrix_;
+    IterImpl impl_;
    public:
     using Cell = decltype(std::tuple_cat(size_t(0), typename LowerMatrix::Iter::Cell()));
   };
+
+  size_t GetSize() const
+  {
+    size_t i = 0;
+
+    for (auto& [key, lower_matrix]: row_)
+    {
+      i += lower_matrix.GetSize();
+    }
+
+    return i;
+  }
+
+  LowerMatrix& operator [](size_t i)
+  {
+    return row_[i];
+  }
+
+  Iter begin() { return Iter(*this); }
+  Iter end() { return Iter(*this, row_.size()); }
 };
 
 template<class T, T Default>
@@ -63,8 +89,6 @@ class Matrix<T, Default, 1>
       return *this;
     }
   };
-
-  friend class Iter;
 
   size_t GetSize() const
   {

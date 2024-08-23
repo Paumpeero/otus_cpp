@@ -12,6 +12,11 @@ using namespace std;
 
 int main()
 {
+  Matrix<int64_t, -1, 3> matrix3;
+  matrix3[0][1][2] = 314;
+  matrix3[0][1][3] = 314;
+  matrix3[0][3][3] = 314;
+  cout << matrix3.GetSize() << endl;
   Matrix<int64_t, -1, 1> matrix;
   assert(matrix.GetSize() == 0);
   auto a = matrix[0];
