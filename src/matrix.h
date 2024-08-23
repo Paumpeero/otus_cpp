@@ -22,11 +22,20 @@ class Matrix<T, Default, 1, size_t>
    public:
     Iter() = delete;
     explicit Iter(Matrix& matrix, size_t offset = 0)
-      : matrix_(matrix), impl_(matrix_.row_.begin() + offset) {}
+      : matrix_(matrix), impl_(matrix_.row_.begin())
+    {
+      while (offset)
+      {
+        ++impl_;
+        --offset;
+      }
+    }
 
     Cell operator *()
     {
-      return std::make_tuple<size_t, T>(impl_->first, impl_->second);
+      auto ret = std::make_tuple<size_t, T>(impl_->first, impl_->second);
+
+      return ret;
     }
 
     Matrix* operator ->() { return &matrix_; }
@@ -50,7 +59,7 @@ class Matrix<T, Default, 1, size_t>
   {
     size_t i = 0;
 
-    for (auto& [key, value] : row_)
+    for (auto& [key, value]: row_)
     {
       if (value != Default) ++i;
     }

@@ -19,5 +19,9 @@ int main()
   matrix[100] = 314;
   assert(matrix.GetSize() == 1);
 
+  auto iter = matrix.begin();
+  assert(iter->GetSize() == 1);
+  auto result = make_tuple<size_t, int64_t>(100, 314);
+
   return EXIT_SUCCESS;
 }
