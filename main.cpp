@@ -12,9 +12,12 @@ using namespace std;
 
 int main()
 {
-  constexpr int64_t kDefault = -1;
-  constexpr size_t kDimensionsCount = 1;
-  Matrix<int64_t, kDefault, kDimensionsCount> matrix;
+  Matrix<int64_t, -1, 1> matrix;
+  assert(matrix.GetSize() == 0);
+  auto a = matrix[0];
+  assert(a == -1);
+  matrix[100] = 314;
+  assert(matrix.GetSize() == 1);
 
   return EXIT_SUCCESS;
 }
