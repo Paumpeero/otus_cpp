@@ -14,8 +14,8 @@ int main()
 {
   Matrix<int64_t, -1, 3> matrix3;
   matrix3[0][1][2] = 314;
-  matrix3[0][2][3] = 314;
-  matrix3[0][4][3] = 314;
+  matrix3[0][2][3] = 315;
+  matrix3[0][4][3] = 316;
   cout << matrix3.GetSize() << endl;
   Matrix<int64_t, -1, 1> matrix;
   assert(matrix.GetSize() == 0);

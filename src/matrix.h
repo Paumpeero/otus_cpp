@@ -18,6 +18,10 @@ class Matrix
     Matrix& matrix_;
    public:
     using Cell = decltype(std::tuple_cat(size_t(0), typename LowerMatrix::Iter::Cell()));
+    explicit Iter()
+    {
+
+    }
   };
 
   size_t GetSize() const
@@ -38,6 +42,7 @@ class Matrix
   }
 
   Iter begin() { return Iter(*this); }
+  Iter from(size_t offset) { return Iter(*this, offset); }
   Iter end() { return Iter(*this, GetSize()); }
 };
 
