@@ -16,7 +16,6 @@ class Matrix
     using IterImpl = typename std::unordered_map<size_t, LowerMatrix>::iterator;
 
     Matrix& matrix_;
-    IterImpl impl_;
    public:
     using Cell = decltype(std::tuple_cat(size_t(0), typename LowerMatrix::Iter::Cell()));
   };
@@ -39,7 +38,7 @@ class Matrix
   }
 
   Iter begin() { return Iter(*this); }
-  Iter end() { return Iter(*this, row_.size()); }
+  Iter end() { return Iter(*this, GetSize()); }
 };
 
 template<class T, T Default>
@@ -113,6 +112,7 @@ class Matrix<T, Default, 1>
   }
 
   Iter begin() { return Iter(*this); }
+  Iter from(size_t i) { return Iter(*this, i); }
   Iter end() { return Iter(*this, row_.size()); }
 };
 }
