@@ -13,15 +13,24 @@ class Matrix
  public:
   class Iter
   {
-    using IterImpl = typename std::unordered_map<size_t, LowerMatrix>::iterator;
-
-    Matrix& matrix_;
    public:
     using Cell = decltype(std::tuple_cat(size_t(0), typename LowerMatrix::Iter::Cell()));
-    explicit Iter()
-    {
+    using IterImpl = typename std::unordered_map<size_t, LowerMatrix>::iterator;
 
+    explicit Iter(Matrix& matrix, size_t offset) noexcept
+    : matrix_(matrix), iter_(matrix_.begin())
+    {
+      while (offset)
+      {
+        ++iter_;
+        --offset;
+      }
     }
+
+    friend class Matrix<T, Default, DimensionsCount + 1>;
+   private:
+    Matrix& matrix_;
+    IterImpl iter_;
   };
 
   size_t GetSize() const
