@@ -12,35 +12,25 @@ using namespace std;
 
 int main()
 {
-  Matrix<int64_t, -1, 3> matrix3;
-  matrix3[0][1][2] = 314;
-  matrix3[0][2][3] = 315;
-  matrix3[0][4][3] = 316;
-  cout << matrix3.GetSize() << endl;
-  Matrix<int64_t, -1, 1> matrix;
-  assert(matrix.GetSize() == 0);
-  auto a = matrix[0];
+  // бесконечная матрица int заполнена значениями -1
+  Matrix<int, -1> matrix;
+  assert(matrix.GetSize() == 0); // все ячейки свободны
+  auto a = matrix[0][0];
   assert(a == -1);
-  matrix[100] = 314;
-  assert(matrix[100] == 314);
-  assert(matrix[101] == -1);
+  assert(matrix.GetSize() == 0);
+  matrix[100][100] = 314;
+  assert(matrix[100][100] == 314);
   assert(matrix.GetSize() == 1);
-
-  auto iter = matrix.begin();
-  assert(iter->GetSize() == 1);
-  auto result = make_tuple<size_t, int64_t>(100, 314);
-
-  matrix[101] = 311;
-
-  for (auto t : matrix)
-  {
-    size_t x;
-    int64_t val;
-
-    std::tie(x, val) = t;
-
-    cout << "x: "s << x << "\nval: " << val << endl;
-  }
+// выведется одна строка
+// 100100314
+//  for(auto c: matrix)
+//  {
+//    int x;
+//    int y;
+//    int v;
+//    std::tie(x, y, v) = c;
+//    std::cout << x << y << v << std::endl;
+//  }
 
   return EXIT_SUCCESS;
 }
