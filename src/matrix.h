@@ -135,6 +135,6 @@ class Matrix
   }
 
   Iter begin() { return Iter(table_, table_.begin(), table_.begin()->second.begin()); }
-  Iter end() { return Iter(table_, table_.end(), table_.begin()->second.begin()); }
+  Iter end() { return Iter(table_, table_.end(), table_.begin()->second.end()); }
 };
 }
