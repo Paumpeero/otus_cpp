@@ -14,8 +14,8 @@ class Row
     using IterImpl = typename std::unordered_map<size_t, T>::iterator;
 
     Row& matrix_;
-    IterImpl impl_;
    public:
+    IterImpl impl_;
     using Cell = std::tuple<size_t, T>;
     Iter() = delete;
     explicit Iter(Row& matrix, size_t offset = 0)
@@ -109,7 +109,7 @@ class Matrix
 
     std::tuple<uint64_t, uint64_t, T> operator *()
     {
-      return std::tuple<uint64_t, uint64_t, T>();
+      return std::make_tuple(table_iter_->first, row_iter_.impl_->first, row_iter_.impl_->second);
     }
 
     Iter& operator ++()
