@@ -88,42 +88,33 @@ class Matrix
  public:
   class Iter
   {
-    using Cell = std::tuple<uint64_t, uint64_t, T>;
-
     Table& table_;
-    Table::iterator table_iter_;
+    typename Table::iterator table_iter_;
     Row<T, DefaultValue>::Iter row_iter_;
    public:
     Iter() = delete;
+    Iter(Table& table,
+         typename Table::iterator table_iter,
+         Row<T, DefaultValue>::Iter row_iter)
+      : table_(table), table_iter_(table_iter), row_iter_(row_iter) {}
 
-    Iter(Table::iterator table_iter,
-         Row<T, DefaultValue>::Iter row_iter,
-         Table& table)
-      : table_iter_(table_iter), row_iter_(row_iter), table_(table) {}
-
-    Cell operator *() { return std::tuple_cat(table_iter_->first, *row_iter_); }
-    Table* operator ->() { return table_iter_; }
-
-    bool operator ==(const Iter& rhs) const
+    bool operator ==(const Iter& rhs)
     {
-      return table_iter_ == rhs.table_iter_ && row_iter_ == rhs.row_iter_;
+      return &table_ == &rhs.table_ && row_iter_ == rhs.row_iter_;
+    }
+    bool operator !=(const Iter& rhs)
+    {
+      return !(*this == rhs);
     }
 
-    bool operator !=(const Iter& rhs) { return !this->operator ==(rhs); }
+    std::tuple<uint64_t, uint64_t, T> operator *()
+    {
+      return std::tuple<uint64_t, uint64_t, T>();
+    }
 
     Iter& operator ++()
     {
-      if (table_iter_ == table_.end()) return;
-
-      if (row_iter_ == table_iter_->second.end())
-      {
-        ++table_iter_;
-        row_iter_ = table_iter_->second.begin();
-      }
-      else
-      {
-        ++row_iter_;
-      }
+      return *this;
     }
   };
   size_t GetSize()
@@ -143,25 +134,7 @@ class Matrix
     return table_[index];
   }
 
-  Iter begin()
-  {
-    typename Table::iterator table_iter = table_.begin();
-    Row<T, DefaultValue> row_iter;
-
-    if (table_iter != table_.end())
-    {
-      row_iter = table_iter->second.begin();
-    }
-
-    return Iter(table_iter, row_iter, table_);
-  }
-
-  Iter end()
-  {
-    typename Table::iterator table_iter = table_.end();
-    Row<T, DefaultValue> row_iter;
-
-    return Iter(table_iter, row_iter, table_);
-  }
+  Iter begin() { return Iter(table_, table_.begin(), table_.begin()->second.begin()); }
+  Iter end() { return Iter(table_, table_.end(), table_.begin()->second.begin()); }
 };
 }

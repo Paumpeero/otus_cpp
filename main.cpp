@@ -23,7 +23,7 @@ int main()
   assert(matrix.GetSize() == 1);
 // выведется одна строка
 // 100100314
-  for(const auto& c: matrix)
+  for(const auto& c : matrix)
   {
     int x;
     int y;
