@@ -103,17 +103,17 @@ class Matrix
     {
       if (!row_iter_.has_value() && !rhs.row_iter_.has_value())
       {
-        return &table_ == &rhs.table_;
+        return &table_iter_ == &rhs.table_iter_;
       }
 
       if (!row_iter_.has_value())
       {
-        return &table_ == &rhs.table_;
+        return false;
       }
 
       if (!rhs.row_iter_.has_value())
       {
-        return &table_ == &rhs.table_;
+        return false;
       }
 
       return &table_ == &rhs.table_
