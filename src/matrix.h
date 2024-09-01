@@ -117,6 +117,7 @@ class Matrix
       }
 
       return &table_ == &rhs.table_
+      && &table_iter_->second == &rhs.table_iter_->second
       && row_iter_.value() == rhs.row_iter_.value();
     }
     bool operator !=(const Iter& rhs)
@@ -131,6 +132,8 @@ class Matrix
 
     Iter& operator ++()
     {
+      if (row_iter_ == std::nullopt) return *this;
+
       ++row_iter_.value();
       if (row_iter_.value() == table_iter_->second.end())
       {
