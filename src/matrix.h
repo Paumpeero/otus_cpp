@@ -131,6 +131,13 @@ class Matrix
 
     Iter& operator ++()
     {
+      ++row_iter_.value();
+      if (row_iter_.value() == table_iter_->second.end())
+      {
+        ++table_iter_;
+        row_iter_.emplace(table_iter_->second.begin());
+      }
+
       return *this;
     }
   };
