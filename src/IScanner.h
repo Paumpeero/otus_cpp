@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <string>
 
 namespace lib
@@ -8,7 +7,8 @@ namespace lib
 class IScanner
 {
  public:
-  virtual std::vector<std::string> Scan() = 0;
+  virtual std::string Scan() = 0;
+  virtual void SetOutputStream(std::ostream& os) = 0;
   virtual ~IScanner() = default;
 };
 }
