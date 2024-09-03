@@ -23,5 +23,8 @@ configure_file(config.json ${CMAKE_BUILD_RPATH} config.json COPYONLY)
 
 add_executable(hello_async
   main.cpp
+  src/IParser.h
+  src/IScanner.h
+  src/IController.h
   src/sdk.h)
 target_link_libraries(hello_async PRIVATE Threads::Threads)

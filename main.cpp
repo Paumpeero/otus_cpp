@@ -6,7 +6,13 @@
 #include <thread>
 #include <vector>
 
+#include "src/IParser.h"
+
+using namespace std;
+using namespace lib;
+
 int main()
 {
+  cout << 456 << endl;
   return EXIT_SUCCESS;
 }
