@@ -7,12 +7,21 @@
 #include <vector>
 
 #include "src/IParser.h"
+#include "src/Scanner.h"
 
 using namespace std;
 using namespace lib;
 
-int main()
+int main(int argc, char** argv)
 {
-  cout << 456 << endl;
+  unique_ptr<IScanner> scanner = make_unique<Scanner>();
+
+  scanner->SetOutputStream(cin);
+
+  while (true)
+  {
+    cout << scanner->Scan() << endl;
+  }
+
   return EXIT_SUCCESS;
 }

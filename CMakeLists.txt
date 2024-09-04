@@ -25,6 +25,8 @@ add_executable(hello_async
   main.cpp
   src/IParser.h
   src/IScanner.h
+  src/Scanner.h
+  src/Scanner.cpp
   src/IController.h
   src/sdk.h)
 target_link_libraries(hello_async PRIVATE Threads::Threads)
