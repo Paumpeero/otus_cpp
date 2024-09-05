@@ -8,7 +8,7 @@ void Logger::SetOutputStream(ostream& ostream)
   ostream_ = &ostream;
 }
 
-void Logger::Log(std::vector<std::string> input_content)
+void Logger::Log(std::string input_content)
 {
   for (auto& chunk : input_content)
   {
