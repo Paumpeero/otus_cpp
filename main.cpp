@@ -20,7 +20,9 @@ int main(int argc, char** argv)
 
   while (true)
   {
-    cout << scanner->Scan() << endl;
+    auto cmd = scanner->Scan();
+
+    cout << cmd << endl;
   }
 
   return EXIT_SUCCESS;

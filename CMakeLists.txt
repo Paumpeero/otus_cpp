@@ -28,5 +28,10 @@ add_executable(hello_async
   src/Scanner.h
   src/Scanner.cpp
   src/IController.h
-  src/sdk.h)
+  src/ITimer.h
+  src/Timer.h
+  src/Timer.cpp
+  src/sdk.h
+  src/Logger.cpp
+  src/Logger.h)
 target_link_libraries(hello_async PRIVATE Threads::Threads)
