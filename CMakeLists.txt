@@ -32,6 +32,7 @@ add_executable(hello_async
   src/Timer.h
   src/Timer.cpp
   src/sdk.h
+  src/ILogger.h
   src/Logger.cpp
   src/Logger.h
   src/Controller.cpp

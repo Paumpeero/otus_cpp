@@ -6,8 +6,11 @@
 #include <thread>
 #include <vector>
 
-#include "src/IParser.h"
 #include "src/Scanner.h"
+#include "src/Timer.h"
+#include "src/Parser.h"
+#include "src/Logger.h"
+#include "src/Controller.h"
 
 using namespace std;
 using namespace lib;
@@ -15,15 +18,10 @@ using namespace lib;
 int main(int argc, char** argv)
 {
   unique_ptr<IScanner> scanner = make_unique<Scanner>();
-
-  scanner->SetInputStream(cin);
-
-  while (true)
-  {
-    auto cmd = scanner->Scan();
-
-    cout << cmd << endl;
-  }
+  unique_ptr<ITimer> timer = make_unique<Timer>();
+  unique_ptr<IParser> parser = make_unique<Parser>();
+  unique_ptr<ILogger> logger = make_unique<Logger>();
+  unique_ptr<IController> controller = make_unique<Controller>();
 
   return EXIT_SUCCESS;
 }
