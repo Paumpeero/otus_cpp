@@ -34,4 +34,19 @@ void Controller::SetTimer(std::unique_ptr<ITimer> timer)
 
 void Controller::Execute()
 {
+  vector<string> v_of_commands;
+
+  while (true)
+  {
+    string command = scanner_->Scan();
+    v_of_commands.push_back(command);
+
+    printer_->Log(command);
+
+    if (auto parsed = parser_->Parse(v_of_commands))
+    {
+      logger_->Log(*parsed);
+      printer_->Log(*parsed);
+    }
+  }
 }

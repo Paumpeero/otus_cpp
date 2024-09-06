@@ -9,7 +9,7 @@ using namespace std;
 
 optional<string> Parser::Parse(const vector<string>& scanned_source)
 {
-  return nullopt;
+  return "COMMAND"s;
 }
 
 void Parser::SetStaticBlockSize(uint64_t size)
