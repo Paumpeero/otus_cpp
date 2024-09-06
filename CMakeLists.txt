@@ -35,5 +35,7 @@ add_executable(hello_async
   src/Logger.cpp
   src/Logger.h
   src/Controller.cpp
-  src/Controller.h)
+  src/Controller.h
+  src/Parser.cpp
+  src/Parser.h)
 target_link_libraries(hello_async PRIVATE Threads::Threads)

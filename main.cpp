@@ -16,7 +16,7 @@ int main(int argc, char** argv)
 {
   unique_ptr<IScanner> scanner = make_unique<Scanner>();
 
-  scanner->SetOutputStream(cin);
+  scanner->SetInputStream(cin);
 
   while (true)
   {

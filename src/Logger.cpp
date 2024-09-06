@@ -10,8 +10,5 @@ void Logger::SetOutputStream(ostream& ostream)
 
 void Logger::Log(std::string input_content)
 {
-  for (auto& chunk : input_content)
-  {
-    *ostream_ << chunk << endl;
-  }
+  *ostream_ << input_content << endl;
 }

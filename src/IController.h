@@ -13,6 +13,7 @@ class IController
 {
  public:
   virtual void SetLogger(std::unique_ptr<ILogger> logger) = 0;
+  virtual void SetPrinter(std::unique_ptr<ILogger> printer) = 0;
   virtual void SetParser(std::unique_ptr<IParser> parser) = 0;
   virtual void SetScanner(std::unique_ptr<IScanner> scanner) = 0;
   virtual void SetTimer(std::unique_ptr<ITimer> timer) = 0;

@@ -14,7 +14,7 @@ std::string Scanner::Scan()
   return ret;
 }
 
-void Scanner::SetOutputStream(istream& is)
+void Scanner::SetInputStream(istream& is)
 {
   is_ = &is;
 }

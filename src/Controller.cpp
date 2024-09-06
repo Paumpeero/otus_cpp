@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <fstream>
 
 #include "Controller.h"
 
@@ -9,6 +10,11 @@ using namespace std;
 void Controller::SetLogger(std::unique_ptr<ILogger> logger)
 {
   logger_ = std::move(logger);
+}
+
+void Controller::SetPrinter(std::unique_ptr<ILogger> printer)
+{
+  printer_ = std::move(printer);
 }
 
 void Controller::SetParser(std::unique_ptr<IParser> parser)
@@ -30,6 +36,7 @@ void Controller::Execute()
 {
   string current_command;
   vector<string> v_of_commands;
+  ofstream of;
 
   while (true)
   {
