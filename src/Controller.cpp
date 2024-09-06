@@ -34,22 +34,5 @@ void Controller::SetTimer(std::unique_ptr<ITimer> timer)
 
 void Controller::Execute()
 {
-  string current_command;
-  vector<string> v_of_commands;
-  ofstream of;
 
-  while (true)
-  {
-    current_command = scanner_->Scan();
-    v_of_commands.push_back(current_command);
-    if (auto printed = parser_->Parse(v_of_commands))
-    {
-      logger_->Log(*printed);
-
-      if (*printed == "EOF"s)
-      {
-        break;
-      }
-    }
-  }
 }

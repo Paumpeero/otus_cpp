@@ -30,8 +30,15 @@ int main(int argc, char** argv)
   logger->SetOutputStream(cout);
   printer->SetOutputStream(file_output_stream);
 
-  logger->Log("Qwerty"s);
-  printer->Log("Qwerty"s);
+  scanner->SetInputStream(cin);
+
+  controller->SetLogger(std::move(logger));
+  controller->SetPrinter(std::move(printer));
+  controller->SetParser(std::move(parser));
+  controller->SetTimer(std::move(timer));
+  controller->SetScanner(std::move(scanner));
+
+  controller->Execute();
 
   file_output_stream.close();
 
