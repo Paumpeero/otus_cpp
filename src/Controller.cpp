@@ -34,5 +34,4 @@ void Controller::SetTimer(std::unique_ptr<ITimer> timer)
 
 void Controller::Execute()
 {
-
 }

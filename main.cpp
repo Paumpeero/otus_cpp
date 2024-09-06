@@ -18,6 +18,8 @@ using namespace lib;
 
 int main(int argc, char** argv)
 {
+  uint64_t step_size = stoi(argv[1]);
+
   unique_ptr<IScanner> scanner = make_unique<Scanner>();
   unique_ptr<ITimer> timer = make_unique<Timer>();
   unique_ptr<IParser> parser = make_unique<Parser>();
@@ -26,6 +28,8 @@ int main(int argc, char** argv)
   unique_ptr<IController> controller = make_unique<Controller>();
 
   auto file_output_stream = ofstream("./bulk_"s + to_string(timer->GetTime()));
+
+  parser->SetStaticBlockSize(step_size);
 
   logger->SetOutputStream(cout);
   printer->SetOutputStream(file_output_stream);
