@@ -43,10 +43,18 @@ void Controller::Execute()
 
     printer_->Log(command);
 
-    if (auto parsed = parser_->Parse(v_of_commands))
+    try
     {
-      logger_->Log(*parsed);
-      printer_->Log(*parsed);
+      if (auto parsed = parser_->Parse(v_of_commands))
+      {
+        logger_->Log(*parsed);
+        printer_->Log(*parsed);
+        v_of_commands = {};
+      }
+    }
+    catch (const runtime_error& err)
+    {
+      break;
     }
   }
 }

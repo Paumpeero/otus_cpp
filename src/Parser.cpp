@@ -1,6 +1,4 @@
-//
-// Created by Антон on 06.09.2024.
-//
+#include <algorithm>
 
 #include "Parser.h"
 
@@ -9,7 +7,48 @@ using namespace std;
 
 optional<string> Parser::Parse(const vector<string>& scanned_source)
 {
-  return "COMMAND"s;
+  auto eof_iter = find(scanned_source.begin(),
+                       scanned_source.end(),
+                       "EOF"s);
+  bool has_eof = eof_iter != scanned_source.end();
+
+  if (has_eof)
+  {
+    string ret = "bulk:"s;
+
+    for (const auto& cmd: scanned_source)
+    {
+      if (cmd == "EOF"s)
+      {
+        break;
+      }
+
+      ret += " "s + cmd;
+    }
+
+    return ret;
+  }
+
+  if (scanned_source.size() == block_size_)
+  {
+    auto dynamic_block = find(scanned_source.begin(),
+                              scanned_source.end(),
+                              "{"s);
+
+    if (dynamic_block == scanned_source.end())
+    {
+      string ret = "bulk:"s;
+
+      for (const auto& cmd: scanned_source)
+      {
+        ret += " "s + cmd;
+      }
+
+      return ret;
+    }
+  }
+
+  return nullopt;
 }
 
 void Parser::SetStaticBlockSize(uint64_t size)
