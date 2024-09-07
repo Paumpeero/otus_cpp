@@ -50,6 +50,11 @@ void Controller::Execute()
         logger_->Log(*parsed);
         printer_->Log(*parsed);
         v_of_commands = {};
+
+        if (command == "EOF"s)
+        {
+          break;
+        }
       }
     }
     catch (const runtime_error& err)

@@ -7,8 +7,7 @@ using namespace lib;
 
 uint64_t Timer::GetTime() const
 {
-  auto now = chrono::system_clock::now().time_since_epoch();
-  auto now_nanoseconds = chrono::duration_cast<chrono::nanoseconds>(now);
+  auto now = chrono::steady_clock::now().time_since_epoch();
 
-  return now_nanoseconds.count();
+  return now.count();
 }
