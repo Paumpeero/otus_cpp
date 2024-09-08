@@ -5,7 +5,7 @@
 using namespace lib;
 using namespace std;
 
-optional<string> Parser::Parse(const vector<string>& scanned_source)
+optional<string> Parser::Parse(std::deque<std::string>& scanned_source)
 {
   auto eof_iter = find(scanned_source.begin(),
                        scanned_source.end(),
@@ -20,10 +20,12 @@ optional<string> Parser::Parse(const vector<string>& scanned_source)
     {
       if (cmd == "EOF"s)
       {
+        scanned_source.pop_front();
         break;
       }
 
       ret += " "s + cmd;
+      scanned_source.pop_front();
     }
 
     return ret;
@@ -42,6 +44,7 @@ optional<string> Parser::Parse(const vector<string>& scanned_source)
       for (const auto& cmd: scanned_source)
       {
         ret += " "s + cmd;
+        scanned_source.pop_front();
       }
 
       return ret;
