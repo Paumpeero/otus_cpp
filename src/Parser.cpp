@@ -88,6 +88,10 @@ optional<string> Parser::Parse(std::deque<std::string>& scanned_source)
           {
             ret += " "s + dq_of_commands.at(0);
             dq_of_commands.pop_front();
+          }
+
+          while (scanned_source.size())
+          {
             scanned_source.pop_front();
           }
 
