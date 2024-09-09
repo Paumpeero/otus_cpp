@@ -31,12 +31,12 @@ optional<string> Parser::Parse(std::deque<std::string>& scanned_source)
     return ret;
   }
 
+  auto dynamic_block = find(scanned_source.begin(),
+                            scanned_source.end(),
+                            "{"s);
+
   if (scanned_source.size() == block_size_)
   {
-    auto dynamic_block = find(scanned_source.begin(),
-                              scanned_source.end(),
-                              "{"s);
-
     if (dynamic_block == scanned_source.end())
     {
       string ret = "bulk:"s;
@@ -48,6 +48,28 @@ optional<string> Parser::Parse(std::deque<std::string>& scanned_source)
       }
 
       return ret;
+    }
+  }
+
+  if (dynamic_block != scanned_source.end())
+  {
+    deque<string> ctx;
+    deque<string> dq_of_commands;
+
+    for (const auto& command : scanned_source)
+    {
+      if (command == "{"s)
+      {
+        ctx.push_back(command);
+        continue;
+      }
+      if (command == "}"s)
+      {
+        ctx.pop_back();
+        continue;
+      }
+
+      dq_of_commands.push_back(command);
     }
   }
 
