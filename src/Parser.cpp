@@ -15,11 +15,27 @@ optional<string> Parser::Parse(std::deque<std::string>& scanned_source)
   if (has_eof)
   {
     string ret = "bulk:"s;
+    deque<string> ctx;
 
     for (const auto& cmd: scanned_source)
     {
+      if (cmd == "{"s)
+      {
+        ctx.push_back(cmd);
+      }
+
+      if (cmd == "}"s)
+      {
+        ctx.pop_front();
+      }
+
       if (cmd == "EOF"s)
       {
+        if (ctx.size())
+        {
+          std::terminate();
+        }
+
         scanned_source.pop_front();
         break;
       }
