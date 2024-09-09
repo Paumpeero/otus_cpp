@@ -79,10 +79,27 @@ optional<string> Parser::Parse(std::deque<std::string>& scanned_source)
       if (command == "}"s)
       {
         ctx.pop_back();
+
+        if (ctx.empty())
+        {
+          string ret = "bulk:"s;
+
+          while (dq_of_commands.size())
+          {
+            ret += " "s + dq_of_commands.at(0);
+            dq_of_commands.pop_front();
+            scanned_source.pop_front();
+          }
+
+          return ret;
+        }
         continue;
       }
 
-      dq_of_commands.push_back(command);
+      if (command != "{"s && command != "}"s)
+      {
+        dq_of_commands.push_back(command);
+      }
     }
   }
 
