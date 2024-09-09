@@ -61,6 +61,19 @@ optional<string> Parser::Parse(std::deque<std::string>& scanned_source)
       if (command == "{"s)
       {
         ctx.push_back(command);
+        if (ctx.size() == 1 && dq_of_commands.size())
+        {
+          string ret = "bulk:"s;
+
+          while (dq_of_commands.size())
+          {
+            ret += " "s + dq_of_commands.at(0);
+            dq_of_commands.pop_front();
+            scanned_source.pop_front();
+          }
+
+          return ret;
+        }
         continue;
       }
       if (command == "}"s)
