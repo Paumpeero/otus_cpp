@@ -12,9 +12,14 @@ void Controller::SetLogger(std::unique_ptr<ILogger> logger)
   logger_ = std::move(logger);
 }
 
-void Controller::SetPrinter(std::unique_ptr<ILogger> printer)
+void Controller::SetPrinter1(std::unique_ptr<ILogger> printer)
 {
-  printer_ = std::move(printer);
+  printer1_ = std::move(printer);
+}
+
+void Controller::SetPrinter2(std::unique_ptr<ILogger> printer)
+{
+  printer2_ = std::move(printer);
 }
 
 void Controller::SetParser(std::unique_ptr<IParser> parser)
@@ -41,14 +46,14 @@ void Controller::Execute()
     string command = scanner_->Scan();
     dq_of_commands.push_back(command);
 
-    printer_->Log(command);
+    printer1_->Log(command);
 
     try
     {
       if (auto parsed = parser_->Parse(dq_of_commands))
       {
         logger_->Log(*parsed);
-        printer_->Log(*parsed);
+        printer1_->Log(*parsed);
 
         if (command == "EOF"s)
         {
