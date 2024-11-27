@@ -47,6 +47,7 @@ void Controller::Execute()
     dq_of_commands.push_back(command);
 
     printer1_->Log(command);
+    printer2_->Log(command);
 
     try
     {
@@ -54,6 +55,7 @@ void Controller::Execute()
       {
         logger_->Log(*parsed);
         printer1_->Log(*parsed);
+        printer2_->Log(*parsed);
 
         if (command == "EOF"s)
         {

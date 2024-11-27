@@ -41,6 +41,7 @@ int main(int argc, char** argv)
 
   controller->SetLogger(std::move(logger));
   controller->SetPrinter1(std::move(printer1));
+  controller->SetPrinter2(std::move(printer2));
   controller->SetParser(std::move(parser));
   controller->SetTimer(std::move(timer));
   controller->SetScanner(std::move(scanner));
