@@ -92,7 +92,8 @@ void Controller::Execute()
   {
     if (!counter)
     {
-      unique_lock<shared_mutex> mtx;
+      unique_lock<shared_mutex> lock(mtx);
+      parsed_content = ""s;
       cmd_copy = scanner_->Scan();
       dq_of_commands.push_back(cmd_copy);
 
