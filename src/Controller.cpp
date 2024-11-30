@@ -43,42 +43,53 @@ void Controller::SetTimer(std::unique_ptr<ITimer> timer)
 
 void Controller::Execute()
 {
-  static string cmd_copy;
-  static string parsed_content;
-  static shared_mutex mtx;
-  static atomic<int> counter = 0;
-  static int kMaxCounter = 3;
-
-  cmd_copy = ""s;
-  parsed_content = ""s;
-
   deque<string> dq_of_commands;
+
+  jthread printer1_worker([this]()
+                         {
+                           while (true)
+                           {
+                             if (counter)
+                             {
+                               printer1_->Log(cmd_copy);
+                               if (!parsed_content.empty())
+                               {
+                                 printer1_->Log(parsed_content);
+                               }
+
+                               if (cmd_copy == "EOF"s)
+                               {
+                                 break;
+                               }
+                               --counter;
+                             }
+                           }
+                         });
 
   while (true)
   {
     if (!counter)
     {
+      parsed_content = ""s;
       unique_lock<shared_mutex> mtx;
-      string command = scanner_->Scan();
-      cmd_copy = command;
-      dq_of_commands.push_back(command);
+      cmd_copy = scanner_->Scan();
+      dq_of_commands.push_back(cmd_copy);
 
-      printer1_->Log(cmd_copy);
       printer2_->Log(cmd_copy);
 
       if (auto parsed = parser_->Parse(dq_of_commands))
       {
         parsed_content = parsed.value();
         logger_->Log(parsed_content);
-        printer1_->Log(parsed_content);
         printer2_->Log(parsed_content);
 
         if (cmd_copy == "EOF"s)
         {
+          counter = kMaxCounter;
           break;
         }
       }
-      counter = 3;
+      counter = kMaxCounter;
     }
   }
 }

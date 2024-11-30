@@ -12,6 +12,12 @@ class Controller : public IController
   std::unique_ptr<IParser> parser_;
   std::unique_ptr<IScanner> scanner_;
   std::unique_ptr<ITimer> timer_;
+
+  std::string cmd_copy;
+  std::string parsed_content;
+  std::shared_mutex mtx;
+  std::atomic<int> counter = 0;
+  constexpr static int kMaxCounter = 1;
  public:
   void SetLogger(std::unique_ptr<ILogger> logger) override;
   void SetPrinter1(std::unique_ptr<ILogger> printer) override;
