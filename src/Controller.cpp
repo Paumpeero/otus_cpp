@@ -51,6 +51,7 @@ void Controller::Execute()
                            {
                              if (counter)
                              {
+                               shared_lock<shared_mutex> lock(mtx);
                                printer1_->Log(cmd_copy);
                                if (!parsed_content.empty())
                                {
@@ -59,6 +60,7 @@ void Controller::Execute()
 
                                if (cmd_copy == "EOF"s)
                                {
+                                 --counter;
                                  break;
                                }
                                --counter;
