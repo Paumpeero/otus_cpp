@@ -47,6 +47,7 @@ void Controller::Execute()
   static string parsed_content;
   static shared_mutex mtx;
   static atomic<int> counter = 0;
+  static int kMaxCounter = 3;
 
   cmd_copy = ""s;
   parsed_content = ""s;
@@ -75,6 +76,7 @@ void Controller::Execute()
           break;
         }
       }
+      counter = kMaxCounter;
     }
   }
 }
