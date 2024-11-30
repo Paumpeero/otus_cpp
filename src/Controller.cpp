@@ -55,23 +55,25 @@ void Controller::Execute()
 
   while (true)
   {
-    string command = scanner_->Scan();
-    cmd_copy = command;
-    dq_of_commands.push_back(command);
+    if (!counter) {
+      string command = scanner_->Scan();
+      cmd_copy = command;
+      dq_of_commands.push_back(command);
 
-    printer1_->Log(command);
-    printer2_->Log(command);
+      printer1_->Log(cmd_copy);
+      printer2_->Log(cmd_copy);
 
-    if (auto parsed = parser_->Parse(dq_of_commands))
-    {
-      parsed_content = parsed.value();
-      logger_->Log(*parsed);
-      printer1_->Log(*parsed);
-      printer2_->Log(*parsed);
-
-      if (command == "EOF"s)
+      if (auto parsed = parser_->Parse(dq_of_commands))
       {
-        break;
+        parsed_content = parsed.value();
+        logger_->Log(parsed_content);
+        printer1_->Log(parsed_content);
+        printer2_->Log(parsed_content);
+
+        if (command == "EOF"s)
+        {
+          break;
+        }
       }
     }
   }
