@@ -52,6 +52,7 @@ void Controller::Execute()
                               if (counter > 0)
                               {
                                 shared_lock<shared_mutex> lock(mtx);
+                                --counter;
                                 printer1_->Log(cmd_copy);
                                 if (!parsed_content.empty())
                                 {
@@ -60,10 +61,8 @@ void Controller::Execute()
 
                                 if (cmd_copy == "EOF"s)
                                 {
-                                  --counter;
                                   break;
                                 }
-                                --counter;
                               }
                             }
                           });
@@ -74,6 +73,7 @@ void Controller::Execute()
                               if (counter > 0)
                               {
                                 shared_lock<shared_mutex> lock(mtx);
+                                --counter;
                                 printer2_->Log(cmd_copy);
                                 if (!parsed_content.empty())
                                 {
@@ -82,10 +82,8 @@ void Controller::Execute()
 
                                 if (cmd_copy == "EOF"s)
                                 {
-                                  --counter;
                                   break;
                                 }
-                                --counter;
                               }
                             }
                           });
@@ -94,7 +92,6 @@ void Controller::Execute()
   {
     if (!counter)
     {
-      parsed_content = ""s;
       unique_lock<shared_mutex> mtx;
       cmd_copy = scanner_->Scan();
       dq_of_commands.push_back(cmd_copy);
