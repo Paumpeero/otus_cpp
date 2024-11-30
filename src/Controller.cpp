@@ -47,10 +47,9 @@ void Controller::Execute()
 
   jthread printer1_worker([this]()
                           {
-                            int x = kMaxCounter;
                             while (true)
                             {
-                              if (counter.compare_exchange_strong(x, x - 1))
+                              if (counter > 0)
                               {
                                 shared_lock<shared_mutex> lock(mtx);
                                 printer1_->Log(cmd_copy);
@@ -61,8 +60,10 @@ void Controller::Execute()
 
                                 if (cmd_copy == "EOF"s)
                                 {
+                                  --counter;
                                   break;
                                 }
+                                --counter;
                               }
                             }
                           });
