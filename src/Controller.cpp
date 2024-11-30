@@ -46,27 +46,48 @@ void Controller::Execute()
   deque<string> dq_of_commands;
 
   jthread printer1_worker([this]()
-                         {
-                           while (true)
-                           {
-                             if (counter)
-                             {
-                               shared_lock<shared_mutex> lock(mtx);
-                               printer1_->Log(cmd_copy);
-                               if (!parsed_content.empty())
-                               {
-                                 printer1_->Log(parsed_content);
-                               }
+                          {
+                            int x = kMaxCounter;
+                            while (true)
+                            {
+                              if (counter.compare_exchange_strong(x, x - 1))
+                              {
+                                shared_lock<shared_mutex> lock(mtx);
+                                printer1_->Log(cmd_copy);
+                                if (!parsed_content.empty())
+                                {
+                                  printer1_->Log(parsed_content);
+                                }
 
-                               if (cmd_copy == "EOF"s)
-                               {
-                                 --counter;
-                                 break;
-                               }
-                               --counter;
-                             }
-                           }
-                         });
+                                if (cmd_copy == "EOF"s)
+                                {
+                                  break;
+                                }
+                              }
+                            }
+                          });
+  jthread printer2_worker([this]()
+                          {
+                            while (true)
+                            {
+                              if (counter > 0)
+                              {
+                                shared_lock<shared_mutex> lock(mtx);
+                                printer2_->Log(cmd_copy);
+                                if (!parsed_content.empty())
+                                {
+                                  printer2_->Log(parsed_content);
+                                }
+
+                                if (cmd_copy == "EOF"s)
+                                {
+                                  --counter;
+                                  break;
+                                }
+                                --counter;
+                              }
+                            }
+                          });
 
   while (true)
   {
@@ -77,13 +98,10 @@ void Controller::Execute()
       cmd_copy = scanner_->Scan();
       dq_of_commands.push_back(cmd_copy);
 
-      printer2_->Log(cmd_copy);
-
       if (auto parsed = parser_->Parse(dq_of_commands))
       {
         parsed_content = parsed.value();
         logger_->Log(parsed_content);
-        printer2_->Log(parsed_content);
 
         if (cmd_copy == "EOF"s)
         {
