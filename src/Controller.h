@@ -17,7 +17,7 @@ class Controller : public IController
   std::string parsed_content;
   std::shared_mutex mtx;
   std::atomic<int> counter = 0;
-  constexpr static int kMaxCounter = 2;
+  constexpr static int kMaxCounter = 3;
  public:
   void SetLogger(std::unique_ptr<ILogger> logger) override;
   void SetPrinter1(std::unique_ptr<ILogger> printer) override;

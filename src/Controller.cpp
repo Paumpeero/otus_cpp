@@ -87,6 +87,27 @@ void Controller::Execute()
                               }
                             }
                           });
+  jthread logger_worker([this]()
+                          {
+                            while (true)
+                            {
+                              if (counter > 0)
+                              {
+                                shared_lock<shared_mutex> lock(mtx);
+                                --counter;
+
+                                if (!parsed_content.empty())
+                                {
+                                  logger_->Log(parsed_content);
+                                }
+
+                                if (cmd_copy == "EOF"s)
+                                {
+                                  break;
+                                }
+                              }
+                            }
+                          });
 
   while (true)
   {
@@ -100,7 +121,6 @@ void Controller::Execute()
       if (auto parsed = parser_->Parse(dq_of_commands))
       {
         parsed_content = parsed.value();
-        logger_->Log(parsed_content);
 
         if (cmd_copy == "EOF"s)
         {
