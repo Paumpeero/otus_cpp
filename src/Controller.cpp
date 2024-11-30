@@ -56,7 +56,9 @@ void Controller::Execute()
 
   while (true)
   {
-    if (!counter) {
+    if (!counter)
+    {
+      unique_lock<shared_mutex> mtx;
       string command = scanner_->Scan();
       cmd_copy = command;
       dq_of_commands.push_back(command);
@@ -71,12 +73,12 @@ void Controller::Execute()
         printer1_->Log(parsed_content);
         printer2_->Log(parsed_content);
 
-        if (command == "EOF"s)
+        if (cmd_copy == "EOF"s)
         {
           break;
         }
       }
-      counter = kMaxCounter;
+      counter = 3;
     }
   }
 }
