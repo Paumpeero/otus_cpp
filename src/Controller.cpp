@@ -1,6 +1,10 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <atomic>
+#include <condition_variable>
+#include <thread>
+#include <shared_mutex>
 
 #include "Controller.h"
 
@@ -39,33 +43,36 @@ void Controller::SetTimer(std::unique_ptr<ITimer> timer)
 
 void Controller::Execute()
 {
+  static string cmd_copy;
+  static string parsed_content;
+  static shared_mutex mtx;
+  static atomic<int> counter = 0;
+
+  cmd_copy = ""s;
+  parsed_content = ""s;
+
   deque<string> dq_of_commands;
 
   while (true)
   {
     string command = scanner_->Scan();
+    cmd_copy = command;
     dq_of_commands.push_back(command);
 
     printer1_->Log(command);
     printer2_->Log(command);
 
-    try
+    if (auto parsed = parser_->Parse(dq_of_commands))
     {
-      if (auto parsed = parser_->Parse(dq_of_commands))
-      {
-        logger_->Log(*parsed);
-        printer1_->Log(*parsed);
-        printer2_->Log(*parsed);
+      parsed_content = parsed.value();
+      logger_->Log(*parsed);
+      printer1_->Log(*parsed);
+      printer2_->Log(*parsed);
 
-        if (command == "EOF"s)
-        {
-          break;
-        }
+      if (command == "EOF"s)
+      {
+        break;
       }
-    }
-    catch (const runtime_error& err)
-    {
-      break;
     }
   }
 }
